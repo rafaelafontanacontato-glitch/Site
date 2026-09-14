@@ -1,0 +1,3 @@
+# Netlify: todas as rotas caem no index.html (o site é uma página só, com
+# navegação por #hash — isso só protege contra alguém digitar um caminho errado)
+/*  /index.html  200

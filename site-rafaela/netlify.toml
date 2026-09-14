@@ -1,0 +1,15 @@
+# Cache: os arquivos de mídia mantêm o mesmo nome quando são trocados
+# (showreel-loop-pt.mp4 continua se chamando assim depois de reexportado).
+# Por isso NÃO usamos cache longo: o navegador de quem já visitou ficaria com a
+# versão velha por um ano. Com must-revalidate ele pergunta antes de usar o que
+# tem em cache — a resposta é um 304 minúsculo quando nada mudou.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/assets/scissors.js"
+  [headers.values]
+    # esse não muda nunca: é a geometria da tesoura
+    Cache-Control = "public, max-age=604800"
