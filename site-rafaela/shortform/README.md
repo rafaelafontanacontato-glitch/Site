@@ -24,8 +24,7 @@ static files.
 
 - `index.html` contains the page structure, metadata, and accessible labels.
 - `styles.css` contains the visual system and responsive layout.
-- `app.js` owns language switching, the work reel, and keyboard/pointer
-  controls.
+- `app.js` owns language switching, the format accordions, and the accessible playback dialog.
 - `portfolio.js` is the content manifest for the selected videos. Add a
   project there with English and Portuguese fields, a poster, and a video URL.
 - `hero.js` controls the interactive computer model. The optimized model is
@@ -65,37 +64,45 @@ served the legacy root page because the new section had not been deployed.
 The apex uses `75.2.60.5`; `www` is a CNAME to the Netlify alias and redirects
 to the apex over HTTPS.
 
-GitHub API checks showed `pull: true` and `push: false` for both the active
-`mau-fontana` account and the stored `morisoinc` account. Do not assume a push
-will work until repository access is granted or the owner uses the existing
-Netlify deployment workflow.
+Use `morisoinc` for GitHub authentication and commit authorship. Signed commits
+use the configured 1Password signing integration.
 
 ## Media and maintenance
 
-The archive contains 14 supplied clips across four categories. `assets-manifest.json`
-records original filenames, dimensions, durations, and export paths. Full originals
-were kept outside the repository; the deployed MP4s use H.264/AAC with faststart.
-The supplied 360p clips retain their source resolution.
+The archive contains 15 supplied clips across B-roll, Talking head, Real estate,
+Brand storytelling, and VJ, plus two YouTube projects. YouTube titles and thumbnails
+come from the videos’ public oEmbed metadata. `assets-manifest.json` records
+original filenames, dimensions, durations, and export paths. Full originals are
+kept outside the repository. The VJ visualizer is a silent 7.59-second loop,
+resized from 4K to 1280×720 for web playback. Existing clips were preserved.
 
-To add a project, export its MP4 and poster into `assets/videos/` and
-`assets/posters/`, then add an entry to `portfolio.js`. Include `width` and `height`
-so landscape videos get the wider presentation. Change the order of the entries
-to reorder the archive. Titles, categories, and descriptions support `en` and `pt`;
-client and year are optional. Do not edit `assets-manifest.json` to change the UI.
+`portfolio.js` exports both `categories` and `portfolio`. Each item has a
+`categoryId` matching a category. Reorder the category list to reorder the drawers,
+or reorder portfolio items to change their order inside each category. Titles,
+categories, and descriptions support `en` and `pt`; client and year are optional.
 
-The page starts in English and remembers a visitor's explicit language choice in
-its own local-storage key. It does not share language state with the cinema site.
-Only the active video gets a source URL; the active and neighboring projects get
-posters. Playback begins on user action, with native controls and sound. The reel
-pauses when it leaves view or the tab becomes hidden. Arrow keys work when the
-carousel area has focus; native video keyboard controls remain available.
+For direct media, put MP4s/posters into `assets/videos/` and `assets/posters/`, then
+add an entry with `video`, `poster`, `width`, and `height`. For YouTube, use a
+`youtubeId` instead of `video`; embeds load only after selecting a project.
+Optional `startSeconds` preserves a timestamp from the supplied link (110 and 847
+seconds for the current projects). An
+optional `loop: true` repeats a clip. Do not edit `assets-manifest.json` to change
+the UI.
+
+The page starts in English and remembers the visitor's language independently of
+the cinema site. Only one category opens at a time. Thumbnails are lazy-loaded;
+video sources and YouTube frames are created on deliberate project selection.
+Closing the dialog, including with Escape, unloads media and restores focus to
+the selected thumbnail. Native videos pause when the tab becomes hidden.
 
 ## Verification for this change
 
-- All 14 video exports decoded successfully; all 28 media/poster URLs returned 200.
+- Existing 14 clips were previously verified; the new VJ export decodes successfully.
+- All 30 direct-media/poster URLs resolve locally.
 - Direct `/shortform` navigation and refresh worked on the local static server.
-- Browser playback, arrows, focused keyboard navigation, swipe, EN/PT, and portrait/
-  landscape layouts were checked; phone widths of 320px and 390px had no page overflow.
+- Category exclusivity/counts, keyboard focus, VJ playback/loop, Escape cleanup,
+  EN/PT, and a 390px phone layout were checked in the browser.
+- The Portuguese blue text block uses a 1.2 line height to separate accented lines.
 - The cinema `index.html` stayed byte-identical to the production snapshot.
 - JavaScript syntax and whitespace checks passed.
 
