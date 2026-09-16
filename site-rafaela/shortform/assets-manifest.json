@@ -1,14 +1,15 @@
 {
   "version": 1,
   "source": "https://drive.google.com/drive/folders/1F_7zDbzkuFmaZCEsISgbDM_Dw4M_YKR-",
-  "totalVideos": 14,
-  "totalBytes": 161225349,
+  "totalVideos": 15,
+  "totalBytes": 165388948,
   "posterFormat": "jpeg",
   "categories": {
     "B-roll driven": 5,
     "Brand Consistent Storytelling": 3,
     "Real Estate": 4,
-    "Talking Head": 2
+    "Talking Head": 2,
+    "VJ": 1
   },
   "videos": [
     {
@@ -164,6 +165,18 @@
       "height": 640,
       "aspect": "9:16",
       "bytes": 3659073
+    },
+    {
+      "file": "assets/videos/vj-visualizer-fellet.mp4",
+      "poster": "assets/posters/vj-visualizer-fellet.jpg",
+      "category": "VJ",
+      "originalName": "Visualizer Fellet.mp4",
+      "duration": 7.591,
+      "width": 1280,
+      "height": 720,
+      "aspect": "16:9",
+      "bytes": 4163599,
+      "audio": false
     }
   ]
 }

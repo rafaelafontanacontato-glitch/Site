@@ -1,5 +1,50 @@
-// Edit this list to add, remove, reorder, or translate projects.
-// All metadata comes from the supplied filenames. Client/year are optional.
+// Edit categories and projects here. Keep each project in its categoryId.
+// YouTube entries use youtubeId and optional startSeconds; direct files use video.
+export const categories = [
+  {
+    id: "b-roll",
+    title: {
+      en: "B-roll",
+      pt: "B-roll",
+    },
+  },
+  {
+    id: "talking-head",
+    title: {
+      en: "Talking head",
+      pt: "Talking head",
+    },
+  },
+  {
+    id: "real-estate",
+    title: {
+      en: "Real estate",
+      pt: "Imóveis",
+    },
+  },
+  {
+    id: "brand-storytelling",
+    title: {
+      en: "Brand storytelling",
+      pt: "Narrativas de marca",
+    },
+  },
+  {
+    id: "vj",
+    title: {
+      en: "VJ",
+      pt: "VJ",
+    },
+  },
+  {
+    id: "youtube",
+    title: {
+      en: "YouTube",
+      pt: "YouTube",
+    },
+  },
+];
+
 export const portfolio = [
   {
     id: "real-estate-luxury-lake-home-broll",
@@ -19,6 +64,7 @@ export const portfolio = [
     },
     width: 720,
     height: 1280,
+    categoryId: "real-estate",
   },
   {
     id: "talking-head-company-introduction",
@@ -38,6 +84,7 @@ export const portfolio = [
     },
     width: 360,
     height: 640,
+    categoryId: "talking-head",
   },
   {
     id: "brand-dino-adventure-tv-commercial",
@@ -57,6 +104,7 @@ export const portfolio = [
     },
     width: 1276,
     height: 720,
+    categoryId: "brand-storytelling",
   },
   {
     id: "b-roll-energetic-vibes",
@@ -76,6 +124,7 @@ export const portfolio = [
     },
     width: 360,
     height: 640,
+    categoryId: "b-roll",
   },
   {
     id: "real-estate-luxury-home-broll",
@@ -95,6 +144,7 @@ export const portfolio = [
     },
     width: 720,
     height: 1280,
+    categoryId: "real-estate",
   },
   {
     id: "b-roll-driven-motion",
@@ -114,6 +164,7 @@ export const portfolio = [
     },
     width: 720,
     height: 1280,
+    categoryId: "b-roll",
   },
   {
     id: "brand-bdl-alimentos-company-history",
@@ -133,6 +184,7 @@ export const portfolio = [
     },
     width: 1276,
     height: 718,
+    categoryId: "brand-storytelling",
   },
   {
     id: "talking-head-customer-testimonial",
@@ -152,6 +204,7 @@ export const portfolio = [
     },
     width: 360,
     height: 640,
+    categoryId: "talking-head",
   },
   {
     id: "b-roll-company-introduction",
@@ -171,6 +224,7 @@ export const portfolio = [
     },
     width: 720,
     height: 1280,
+    categoryId: "b-roll",
   },
   {
     id: "real-estate-nature-house-host-led",
@@ -190,6 +244,7 @@ export const portfolio = [
     },
     width: 720,
     height: 1280,
+    categoryId: "real-estate",
   },
   {
     id: "brand-real-estate-agency-overview",
@@ -209,6 +264,7 @@ export const portfolio = [
     },
     width: 1276,
     height: 718,
+    categoryId: "brand-storytelling",
   },
   {
     id: "b-roll-driven",
@@ -228,6 +284,7 @@ export const portfolio = [
     },
     width: 720,
     height: 1280,
+    categoryId: "b-roll",
   },
   {
     id: "real-estate-land-listing-host-led",
@@ -247,6 +304,7 @@ export const portfolio = [
     },
     width: 720,
     height: 1280,
+    categoryId: "real-estate",
   },
   {
     id: "b-roll-explanation",
@@ -266,5 +324,69 @@ export const portfolio = [
     },
     width: 720,
     height: 1280,
+    categoryId: "b-roll",
+  },
+  {
+    id: "vj-visualizer-fellet",
+    categoryId: "vj",
+    video: "./assets/videos/vj-visualizer-fellet.mp4",
+    poster: "./assets/posters/vj-visualizer-fellet.jpg",
+    title: {
+      en: "Visualizer Fellet",
+      pt: "Visualizer Fellet",
+    },
+    category: {
+      en: "VJ",
+      pt: "VJ",
+    },
+    description: {
+      en: "",
+      pt: "",
+    },
+    width: 1280,
+    height: 720,
+    loop: true,
+  },
+  {
+    id: "youtube-yNtPpjtAwHk",
+    categoryId: "youtube",
+    youtubeId: "yNtPpjtAwHk",
+    startSeconds: 110,
+    poster: "https://i.ytimg.com/vi/yNtPpjtAwHk/hqdefault.jpg",
+    title: {
+      en: "Quick highlights on dark hair",
+      pt: "Mechas rápidas em cabelo escuro",
+    },
+    category: {
+      en: "YouTube",
+      pt: "YouTube",
+    },
+    description: {
+      en: "",
+      pt: "",
+    },
+    width: 1280,
+    height: 720,
+  },
+  {
+    id: "youtube-VAW9dQNjr_U",
+    categoryId: "youtube",
+    youtubeId: "VAW9dQNjr_U",
+    startSeconds: 847,
+    poster: "https://i.ytimg.com/vi/VAW9dQNjr_U/hqdefault.jpg",
+    title: {
+      en: "How to create highlights with affordable products",
+      pt: "Como fazer mechas com produtos baratos",
+    },
+    category: {
+      en: "YouTube",
+      pt: "YouTube",
+    },
+    description: {
+      en: "",
+      pt: "",
+    },
+    width: 1280,
+    height: 720,
   },
 ];

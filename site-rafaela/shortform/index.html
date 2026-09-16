@@ -29,7 +29,7 @@
       type="image/png"
     />
     <link rel="stylesheet" href="assets/fonts/fonts.css" />
-    <link rel="stylesheet" href="styles.css?v=3" />
+    <link rel="stylesheet" href="styles.css?v=8" />
     <script type="importmap">
       { "imports": { "three": "./vendor/three.module.js" } }
     </script>
@@ -104,68 +104,7 @@
           </p>
         </div>
 
-        <div
-          class="reel"
-          data-reel
-          aria-roledescription="carousel"
-          aria-label="Selected video work"
-          data-i18n-aria="reelLabel"
-        >
-          <div
-            class="reel-viewport"
-            data-reel-viewport
-            tabindex="0"
-            aria-label="Video carousel"
-            data-i18n-aria="carouselLabel"
-          >
-            <div class="reel-track" data-reel-track></div>
-            <div class="reel-empty" data-reel-empty>
-              <span>↗</span>
-              <p data-i18n="workEmpty">
-                The selected archive is being prepared.
-              </p>
-            </div>
-          </div>
-          <div class="reel-controls">
-            <div class="reel-meta" aria-live="polite">
-              <span data-reel-count>00 / 00</span>
-              <span class="reel-line"></span>
-              <span data-reel-category>—</span>
-            </div>
-            <div class="reel-buttons">
-              <button
-                type="button"
-                class="circle-button"
-                data-reel-prev
-                aria-label="Previous project"
-                data-i18n-aria="previousProject"
-              >
-                ←
-              </button>
-              <button
-                type="button"
-                class="circle-button"
-                data-reel-next
-                aria-label="Next project"
-                data-i18n-aria="nextProject"
-              >
-                →
-              </button>
-            </div>
-          </div>
-          <div
-            class="reel-progress"
-            role="progressbar"
-            aria-label="Project progress"
-            data-i18n-aria="projectProgress"
-            aria-valuemin="0"
-            aria-valuemax="0"
-            aria-valuenow="0"
-          >
-            <span data-reel-progress></span>
-          </div>
-          <div class="reel-caption" data-reel-caption></div>
-        </div>
+        <div class="format-archive" data-format-archive></div>
       </section>
 
       <section
@@ -247,6 +186,30 @@
       </div>
     </footer>
 
-    <script type="module" src="app.js?v=2"></script>
+    <dialog
+      class="project-dialog"
+      data-project-dialog
+      aria-labelledby="project-dialog-title"
+    >
+      <div class="project-dialog-inner">
+        <button
+          class="dialog-close"
+          type="button"
+          data-dialog-close
+          aria-label="Close project"
+          data-i18n-aria="closeProject"
+        >
+          <span aria-hidden="true">×</span>
+        </button>
+        <div class="project-player" data-project-player></div>
+        <div class="project-dialog-meta">
+          <p class="eyebrow" data-project-category></p>
+          <h2 id="project-dialog-title" data-project-title></h2>
+          <p data-project-description></p>
+        </div>
+      </div>
+    </dialog>
+
+    <script type="module" src="app.js?v=8"></script>
   </body>
 </html>
