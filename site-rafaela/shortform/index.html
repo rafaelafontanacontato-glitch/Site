@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#e9e7e1" />
+    <meta
+      name="description"
+      content="Rafaela Fontana — video editor for YouTube and short-form content."
+    />
+    <link rel="canonical" href="https://rafaelafontana.com/shortform/" />
+    <meta property="og:title" content="Rafaela Fontana — Video Editor" />
+    <meta
+      property="og:description"
+      content="Video editor for YouTube, short-form and everything in between."
+    />
+    <meta property="og:url" content="https://rafaelafontana.com/shortform/" />
+    <meta
+      property="og:image"
+      content="https://rafaelafontana.com/assets/retrato-rafaela.jpg"
+    />
+    <meta property="og:site_name" content="Rafaela Fontana" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <title>Rafaela Fontana — Video Editor</title>
+    <link
+      rel="icon"
+      href="../assets/favicon-32.png"
+      sizes="32x32"
+      type="image/png"
+    />
+    <link rel="stylesheet" href="assets/fonts/fonts.css" />
+    <link rel="stylesheet" href="styles.css?v=3" />
+    <script type="importmap">
+      { "imports": { "three": "./vendor/three.module.js" } }
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#work" data-i18n="skip">Skip to work</a>
+
+    <header class="site-header" data-header>
+      <a
+        class="wordmark"
+        href="#top"
+        aria-label="Rafaela Fontana, top"
+        data-i18n-aria="homeLabel"
+        >RF<span>—</span></a
+      >
+      <nav aria-label="Primary navigation" data-i18n-aria="primaryNav">
+        <a href="#work" data-i18n="navWork">Work</a>
+        <a href="#about" data-i18n="navAbout">About</a>
+        <a href="#contact" data-i18n="navContact">Contact</a>
+      </nav>
+      <button
+        class="language-toggle"
+        type="button"
+        data-language-toggle
+        aria-label="Switch to Portuguese"
+      >
+        <span class="lang-en">EN</span><span aria-hidden="true">/</span
+        ><span class="lang-pt">PT</span>
+      </button>
+    </header>
+
+    <main>
+      <section class="hero" id="top" aria-labelledby="hero-title">
+        <div class="hero-grain" aria-hidden="true"></div>
+        <div class="hero-copy">
+          <p class="eyebrow" data-i18n="heroEyebrow">
+            Independent video editor
+          </p>
+          <h1 id="hero-title" class="hero-title" aria-label="Rafaela Fontana">
+            <span>Rafaela</span><span>Fontana</span>
+          </h1>
+          <p class="hero-role" data-i18n="heroRole">Video editor</p>
+        </div>
+        <div
+          class="computer-stage"
+          aria-label="Interactive 3D retro computer"
+          data-i18n-aria="computerLabel"
+        >
+          <canvas id="computer-canvas"></canvas>
+          <div class="computer-fallback" aria-hidden="true">
+            <span>RF</span><i></i><b></b>
+          </div>
+        </div>
+        <a
+          href="#work"
+          class="hero-scroll"
+          aria-label="Scroll to work"
+          data-i18n-aria="scrollLabel"
+          ><span data-i18n="scroll">See selected work</span><i>↓</i></a
+        >
+        <p class="hero-index" aria-hidden="true">01—26</p>
+      </section>
+
+      <section class="work-section" id="work" aria-labelledby="work-title">
+        <div class="section-heading work-heading">
+          <div>
+            <p class="eyebrow" data-i18n="workEyebrow">Selected archive</p>
+            <h2 id="work-title" data-i18n="workTitle">The edits.</h2>
+          </div>
+          <p class="section-note" data-i18n="workNote">
+            Short-form, YouTube, and social.
+          </p>
+        </div>
+
+        <div
+          class="reel"
+          data-reel
+          aria-roledescription="carousel"
+          aria-label="Selected video work"
+          data-i18n-aria="reelLabel"
+        >
+          <div
+            class="reel-viewport"
+            data-reel-viewport
+            tabindex="0"
+            aria-label="Video carousel"
+            data-i18n-aria="carouselLabel"
+          >
+            <div class="reel-track" data-reel-track></div>
+            <div class="reel-empty" data-reel-empty>
+              <span>↗</span>
+              <p data-i18n="workEmpty">
+                The selected archive is being prepared.
+              </p>
+            </div>
+          </div>
+          <div class="reel-controls">
+            <div class="reel-meta" aria-live="polite">
+              <span data-reel-count>00 / 00</span>
+              <span class="reel-line"></span>
+              <span data-reel-category>—</span>
+            </div>
+            <div class="reel-buttons">
+              <button
+                type="button"
+                class="circle-button"
+                data-reel-prev
+                aria-label="Previous project"
+                data-i18n-aria="previousProject"
+              >
+                ←
+              </button>
+              <button
+                type="button"
+                class="circle-button"
+                data-reel-next
+                aria-label="Next project"
+                data-i18n-aria="nextProject"
+              >
+                →
+              </button>
+            </div>
+          </div>
+          <div
+            class="reel-progress"
+            role="progressbar"
+            aria-label="Project progress"
+            data-i18n-aria="projectProgress"
+            aria-valuemin="0"
+            aria-valuemax="0"
+            aria-valuenow="0"
+          >
+            <span data-reel-progress></span>
+          </div>
+          <div class="reel-caption" data-reel-caption></div>
+        </div>
+      </section>
+
+      <section
+        class="manifesto"
+        aria-label="Positioning"
+        data-i18n-aria="positioning"
+      >
+        <p data-i18n="manifesto">
+          Video editor for YouTube, short-form and everything in between.
+        </p>
+      </section>
+
+      <section class="about-section" id="about" aria-labelledby="about-title">
+        <div class="about-image-wrap">
+          <img
+            src="../assets/retrato-rafaela.jpg"
+            alt="Rafaela Fontana"
+            loading="lazy"
+          />
+        </div>
+        <div class="about-content">
+          <p class="eyebrow" data-i18n="aboutEyebrow">About</p>
+          <h2 id="about-title" data-i18n="aboutTitle">
+            Editing with an ear for pace.
+          </h2>
+          <p data-i18n="aboutCopy">
+            I’m Rafaela, a video editor working across YouTube, short-form and
+            social content. I shape footage into clear, engaging edits that feel
+            natural to watch.
+          </p>
+          <div
+            class="services"
+            aria-label="Services"
+            data-i18n-aria="servicesLabel"
+          >
+            <span data-i18n="service1">Reels, TikTok &amp; Shorts</span>
+            <span data-i18n="service2">YouTube videos</span>
+            <span data-i18n="service3">Motion &amp; captions</span>
+            <span data-i18n="service4">Pacing &amp; storytelling</span>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="contact" id="contact">
+      <p class="eyebrow" data-i18n="contactEyebrow">
+        Available for selected projects
+      </p>
+      <h2 data-i18n="contactTitle">Have a project<br />in mind?</h2>
+      <a class="contact-email" href="mailto:hello@rafaelafontana.com"
+        >hello@rafaelafontana.com <span>↗</span></a
+      >
+      <div class="footer-bottom">
+        <a
+          href="https://www.instagram.com/rafaela.fontn/"
+          target="_blank"
+          rel="noopener"
+          >Instagram ↗</a
+        >
+        <details class="model-credit">
+          <summary data-i18n="modelCredit">3D model credit</summary>
+          <p data-i18n="modelCreditText">
+            “PS1 Style Retro Computer Station – Low Poly” by
+            <a
+              href="https://sketchfab.com/alexself"
+              target="_blank"
+              rel="noopener"
+              >alexself</a
+            >, licensed under
+            <a
+              href="https://creativecommons.org/licenses/by/4.0/"
+              target="_blank"
+              rel="noopener"
+              >CC BY 4.0</a
+            >.
+          </p>
+        </details>
+        <span>© <span data-year></span> Rafaela Fontana</span>
+      </div>
+    </footer>
+
+    <script type="module" src="app.js?v=2"></script>
+  </body>
+</html>

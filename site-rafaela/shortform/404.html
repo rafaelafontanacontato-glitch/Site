@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Page not found — Rafaela Fontana</title>
+    <style>
+      body {
+        margin: 0;
+        background: #ecede9;
+        color: #14151a;
+        font-family: Arial, sans-serif;
+        min-height: 100svh;
+        display: grid;
+        place-items: center;
+      }
+      main {
+        width: min(80%, 700px);
+      }
+      p {
+        line-height: 1.7;
+      }
+      h1 {
+        font-size: clamp(3rem, 8vw, 6rem);
+        line-height: 1;
+        letter-spacing: -0.06em;
+        margin: 0.4em 0;
+      }
+      a {
+        color: inherit;
+        text-underline-offset: 0.3em;
+      }
+      small {
+        letter-spacing: 0.1em;
+      }
+      button {
+        background: none;
+        border: 0;
+        padding: 1em 0;
+        color: inherit;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <small>RAFAELA FONTANA / 404</small>
+      <h1
+        data-en="This page is out of frame."
+        data-pt="Esta página ficou fora de quadro."
+      >
+        This page is out of frame.
+      </h1>
+      <p>
+        <a
+          href="/shortform/"
+          data-en="Back to the portfolio ↗"
+          data-pt="Voltar ao portfólio ↗"
+          >Back to the portfolio ↗</a
+        >
+      </p>
+      <button type="button" aria-label="Switch language">EN / PT</button>
+    </main>
+    <script>
+      let language = "en";
+      document.querySelector("button").addEventListener("click", () => {
+        language = language === "en" ? "pt" : "en";
+        document.documentElement.lang = language === "pt" ? "pt-BR" : "en";
+        document.title =
+          language === "pt"
+            ? "Página não encontrada — Rafaela Fontana"
+            : "Page not found — Rafaela Fontana";
+        document
+          .querySelector("button")
+          .setAttribute(
+            "aria-label",
+            language === "pt" ? "Trocar idioma" : "Switch language",
+          );
+        document
+          .querySelectorAll("[data-en]")
+          .forEach((el) => (el.textContent = el.dataset[language]));
+      });
+    </script>
+  </body>
+</html>

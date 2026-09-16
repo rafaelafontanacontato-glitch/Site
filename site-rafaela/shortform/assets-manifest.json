@@ -1,0 +1,169 @@
+{
+  "version": 1,
+  "source": "https://drive.google.com/drive/folders/1F_7zDbzkuFmaZCEsISgbDM_Dw4M_YKR-",
+  "totalVideos": 14,
+  "totalBytes": 161225349,
+  "posterFormat": "jpeg",
+  "categories": {
+    "B-roll driven": 5,
+    "Brand Consistent Storytelling": 3,
+    "Real Estate": 4,
+    "Talking Head": 2
+  },
+  "videos": [
+    {
+      "file": "assets/videos/b-roll-energetic-vibes.mp4",
+      "poster": "assets/posters/b-roll-energetic-vibes.jpg",
+      "category": "B-roll driven",
+      "originalName": "B-roll (energetic vibes)",
+      "duration": 24.19,
+      "width": 360,
+      "height": 640,
+      "aspect": "9:16",
+      "bytes": 3234244
+    },
+    {
+      "file": "assets/videos/b-roll-driven.mp4",
+      "poster": "assets/posters/b-roll-driven.jpg",
+      "category": "B-roll driven",
+      "originalName": "B-roll driven",
+      "duration": 25.06,
+      "width": 720,
+      "height": 1280,
+      "aspect": "9:16",
+      "bytes": 5705893
+    },
+    {
+      "file": "assets/videos/b-roll-company-introduction.mp4",
+      "poster": "assets/posters/b-roll-company-introduction.jpg",
+      "category": "B-roll driven",
+      "originalName": "B-roll driven (Company's introduction)",
+      "duration": 34.44,
+      "width": 720,
+      "height": 1280,
+      "aspect": "9:16",
+      "bytes": 9995264
+    },
+    {
+      "file": "assets/videos/b-roll-explanation.mp4",
+      "poster": "assets/posters/b-roll-explanation.jpg",
+      "category": "B-roll driven",
+      "originalName": "B-roll driven (explanation)",
+      "duration": 27.57,
+      "width": 720,
+      "height": 1280,
+      "aspect": "9:16",
+      "bytes": 7527758
+    },
+    {
+      "file": "assets/videos/b-roll-driven-motion.mp4",
+      "poster": "assets/posters/b-roll-driven-motion.jpg",
+      "category": "B-roll driven",
+      "originalName": "B-roll driven + motion",
+      "duration": 27.36,
+      "width": 720,
+      "height": 1280,
+      "aspect": "9:16",
+      "bytes": 4163058
+    },
+    {
+      "file": "assets/videos/brand-bdl-alimentos-company-history.mp4",
+      "poster": "assets/posters/brand-bdl-alimentos-company-history.jpg",
+      "category": "Brand Consistent Storytelling",
+      "originalName": "BDL Alimentos — Company history",
+      "duration": 247.69,
+      "width": 1276,
+      "height": 718,
+      "aspect": "16:9",
+      "bytes": 41459430
+    },
+    {
+      "file": "assets/videos/brand-dino-adventure-tv-commercial.mp4",
+      "poster": "assets/posters/brand-dino-adventure-tv-commercial.jpg",
+      "category": "Brand Consistent Storytelling",
+      "originalName": "Dino Adventure — TV-style commercial",
+      "duration": 63.67,
+      "width": 1276,
+      "height": 720,
+      "aspect": "16:9",
+      "bytes": 28350116
+    },
+    {
+      "file": "assets/videos/brand-real-estate-agency-overview.mp4",
+      "poster": "assets/posters/brand-real-estate-agency-overview.jpg",
+      "category": "Brand Consistent Storytelling",
+      "originalName": "Real estate agency — company overview",
+      "duration": 100.89,
+      "width": 1276,
+      "height": 718,
+      "aspect": "16:9",
+      "bytes": 14252727
+    },
+    {
+      "file": "assets/videos/real-estate-luxury-home-broll.mp4",
+      "poster": "assets/posters/real-estate-luxury-home-broll.jpg",
+      "category": "Real Estate",
+      "originalName": "Real Estate Reel — Luxury Home (B-Roll Only)",
+      "duration": 32.92,
+      "width": 720,
+      "height": 1280,
+      "aspect": "9:16",
+      "bytes": 8608346
+    },
+    {
+      "file": "assets/videos/real-estate-luxury-lake-home-broll.mp4",
+      "poster": "assets/posters/real-estate-luxury-lake-home-broll.jpg",
+      "category": "Real Estate",
+      "originalName": "Real Estate Reel — Luxury Lake Home (B-Roll Only)",
+      "duration": 26.68,
+      "width": 720,
+      "height": 1280,
+      "aspect": "9:16",
+      "bytes": 5853230
+    },
+    {
+      "file": "assets/videos/real-estate-land-listing-host-led.mp4",
+      "poster": "assets/posters/real-estate-land-listing-host-led.jpg",
+      "category": "Real Estate",
+      "originalName": "Real Estate — Land Listing (Host-Led)",
+      "duration": 45.07,
+      "width": 720,
+      "height": 1280,
+      "aspect": "9:16",
+      "bytes": 7585946
+    },
+    {
+      "file": "assets/videos/real-estate-nature-house-host-led.mp4",
+      "poster": "assets/posters/real-estate-nature-house-host-led.jpg",
+      "category": "Real Estate",
+      "originalName": "Real Estate — Nature House (Host-Led)",
+      "duration": 60.12,
+      "width": 720,
+      "height": 1280,
+      "aspect": "9:16",
+      "bytes": 17577546
+    },
+    {
+      "file": "assets/videos/talking-head-company-introduction.mp4",
+      "poster": "assets/posters/talking-head-company-introduction.jpg",
+      "category": "Talking Head",
+      "originalName": "Talking Head (Company's Introduction)",
+      "duration": 60.06,
+      "width": 360,
+      "height": 640,
+      "aspect": "9:16",
+      "bytes": 3252718
+    },
+    {
+      "file": "assets/videos/talking-head-customer-testimonial.mp4",
+      "poster": "assets/posters/talking-head-customer-testimonial.jpg",
+      "category": "Talking Head",
+      "originalName": "Talking Head (Customer Testimonial)",
+      "duration": 60.06,
+      "width": 360,
+      "height": 640,
+      "aspect": "9:16",
+      "bytes": 3659073
+    }
+  ]
+}
