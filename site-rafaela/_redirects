@@ -1,3 +1,8 @@
-# Netlify: todas as rotas caem no index.html (o site é uma página só, com
-# navegação por #hash — isso só protege contra alguém digitar um caminho errado)
+# Keep the short-form portfolio separate from the cinema homepage.
+/shortform    /shortform/             301
+/shortform/   /shortform/index.html   200
+# Existing files shadow this rule; unknown short-form URLs stay in this site.
+/shortform/*  /shortform/404.html     404
+
+# Existing cinema fallback and hash-based project links are preserved.
 /*  /index.html  200
