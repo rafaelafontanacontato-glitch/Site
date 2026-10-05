@@ -892,6 +892,7 @@
     color: rgba(255,255,255,.85);
   }
   .work-selo img{ width:34px; height:34px; flex-shrink:0; }
+  .work-selo.alto img{ width:auto; height:132px; }
 
   .work-link{
     display:inline-block;
@@ -1881,6 +1882,7 @@ const OBRAS = {
     projeto: 'Realizado dentro do projeto integrador Fortalecendo Artistas: A Criação de Videoclipes na Cena Musical, iniciativa liderada por estudantes de Design Gráfico e de Publicidade e Propaganda do centro universitário Descomplica UniAmérica, em Foz do Iguaçu. O projeto produzia videoclipes para produtores e músicos independentes, tanto para a divulgação do trabalho deles quanto para levar a obra a concursos de videoclipe estudantil. Soltin é o segundo clipe realizado dentro dele, e o trabalho com que o projeto se encerrou.',
     projetoLink: { url: 'https://www.instagram.com/2xtuts/', label: '@2xtuts no Instagram' },
     festivais: [],
+    selo: { icone: 'assets/mostra-cinema-de-rua-2026.png', alto: true, texto: 'Selecionado para a segunda fase da Mostra Brasileira Independente de Cinema de Rua 2026' },
     fundo: 'assets/soltin-danca.jpg',
     trailer: 'pGNZqTlVoLU', trailerTipo: 'youtube', videoTitulo: '',
     videoCapa: 'assets/soltin-capa-video.jpg',
@@ -1895,6 +1897,7 @@ const OBRAS = {
       sinopse: 'Inside a bar, two characters meet, flirt and end up dancing together.',
       projeto: 'Made within the integrative project Fortalecendo Artistas: A Criação de Videoclipes na Cena Musical, an initiative led by Graphic Design and Advertising students at the Descomplica UniAmérica university centre in Foz do Iguaçu. The project produced music videos for independent producers and musicians, both to promote their work and to enter student music-video competitions. Soltin is the second video made within it, and the work the project closed with.',
       projetoLink: { url: 'https://www.instagram.com/2xtuts/', label: '@2xtuts on Instagram' },
+      selo: { icone: 'assets/mostra-cinema-de-rua-2026.png', alto: true, texto: 'Selected for the second round of the Mostra Brasileira Independente de Cinema de Rua 2026' },
       fichaCompleta: [
         ['Music', ['Music production — Elebonde', 'Mixing and mastering — Rodrigo Coimbra']],
         ['Direction', ['Screenplay — Rafaela Fontana, Ana Julia Zeferino', 'Creative direction — Rafaela Fontana, Ana Julia Zeferino, Giovanna Ferreira Feitosa', 'Direction — Rafaela Fontana']],
@@ -2080,7 +2083,7 @@ const OBRAS = {
       html += '</div>';
     }
     if (obra.selo){
-      html += '<div class="block work-selo">' +
+      html += '<div class="block work-selo' + (obra.selo.alto ? ' alto' : '') + '">' +
               (obra.selo.icone ? '<img src="' + esc(obra.selo.icone) + '" alt="">' : '') +
               '<span>' + esc(obra.selo.texto) + '</span></div>';
     }
