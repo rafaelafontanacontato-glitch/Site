@@ -180,6 +180,11 @@ video:focus-visible {
   height: 100%;
   position: relative;
   z-index: 2;
+  opacity: 0;
+  transition: opacity 0.9s ease;
+}
+.model-ready canvas {
+  opacity: 1;
 }
 .computer-fallback {
   position: absolute;
@@ -193,7 +198,12 @@ video:focus-visible {
   transform: translate(-50%, -50%) rotate(-9deg);
   box-shadow: 1.1rem 2rem 0 rgba(17, 17, 17, 0.13);
   z-index: 1;
+  opacity: 0;
+  pointer-events: none;
   transition: opacity 0.3s;
+}
+.model-failed .computer-fallback {
+  opacity: 1;
 }
 .computer-fallback span {
   position: absolute;
@@ -720,9 +730,6 @@ video:focus-visible {
   padding: 0;
   margin: 0;
 }
-.format-gallery.is-portrait {
-  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-}
 .format-gallery li {
   min-width: 0;
 }
@@ -737,6 +744,8 @@ video:focus-visible {
   text-align: left;
 }
 .tile-image {
+  position: relative;
+  isolation: isolate;
   display: block;
   width: 100%;
   aspect-ratio: 16/9;
@@ -744,15 +753,21 @@ video:focus-visible {
   background: #080809;
   border: 1px solid #333430;
 }
+/* vídeo vertical dentro do quadro padrão: o próprio poster, borrado, preenche as laterais */
+.tile-image::before {
+  content: "";
+  position: absolute;
+  inset: -14%;
+  z-index: -1;
+  background: var(--poster) center / cover no-repeat;
+  filter: blur(24px) brightness(0.5);
+}
 .tile-image img {
   width: 100%;
   height: 100%;
   object-fit: contain;
   display: block;
   transition: opacity 0.2s;
-}
-.is-portrait .tile-image {
-  aspect-ratio: 9/16;
 }
 .project-tile:hover .tile-image img {
   opacity: 0.8;
@@ -895,16 +910,9 @@ body.project-open {
   .format-panel {
     padding: 5px 0 28px;
   }
-  .format-gallery,
-  .format-gallery.is-portrait {
+  .format-gallery {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 24px 13px;
-  }
-  .format-gallery:not(.is-portrait) {
-    grid-template-columns: 1fr;
-  }
-  .format-gallery:not(.is-portrait) .project-tile {
-    max-width: 100%;
   }
   .tile-caption {
     gap: 6px;

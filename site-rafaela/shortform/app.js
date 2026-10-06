@@ -126,6 +126,72 @@ function closeProject() {
   if (dialog.open) dialog.close();
 }
 
+/* Abrir e fechar as abas com altura, espaçamento e opacidade animados.
+   Se der outro clique no meio da animação, ela continua de onde estava. */
+const PANEL_MS = 620;
+const PANEL_EASE = "cubic-bezier(.22,.61,.36,1)";
+const panelAnimations = new WeakMap();
+const prefersReducedMotion = () =>
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+function slidePanel(panel, open) {
+  const running = panelAnimations.get(panel);
+  let from = null;
+  if (running) {
+    const now = getComputedStyle(panel);
+    from = {
+      height: `${panel.offsetHeight}px`,
+      paddingTop: now.paddingTop,
+      paddingBottom: now.paddingBottom,
+      opacity: now.opacity,
+    };
+    running.onfinish = null;
+    running.cancel();
+    panelAnimations.delete(panel);
+  }
+  if (open) panel.hidden = false;
+  if (prefersReducedMotion() || !panel.animate) {
+    panel.hidden = !open;
+    updateHeader();
+    return;
+  }
+  const natural = getComputedStyle(panel);
+  const full = {
+    height: `${panel.offsetHeight}px`,
+    paddingTop: natural.paddingTop,
+    paddingBottom: natural.paddingBottom,
+    opacity: "1",
+  };
+  const none = { height: "0px", paddingTop: "0px", paddingBottom: "0px", opacity: "0" };
+  const start = from || (open ? none : full);
+  const end = open ? full : none;
+  panel.style.overflow = "hidden";
+  const animation = panel.animate([start, end], {
+    duration: PANEL_MS,
+    easing: PANEL_EASE,
+  });
+  panelAnimations.set(panel, animation);
+  animation.onfinish = () => {
+    panelAnimations.delete(panel);
+    panel.style.overflow = "";
+    if (!open) panel.hidden = true;
+    updateHeader();
+  };
+}
+
+function setOpenCategory(next) {
+  openCategoryId = next;
+  archive.querySelectorAll(".format-item").forEach((item) => {
+    const open = item.dataset.categoryId === next;
+    const button = item.querySelector(".format-toggle");
+    if ((button.getAttribute("aria-expanded") === "true") === open) return;
+    button.setAttribute("aria-expanded", String(open));
+    item.querySelector(".format-symbol").textContent = open ? "×" : "+";
+    slidePanel(item.querySelector(".format-panel"), open);
+  });
+  updateHeader();
+}
+
 function renderArchive() {
   archive.replaceChildren();
   categories.forEach((category, categoryIndex) => {
@@ -150,21 +216,10 @@ function renderArchive() {
     toggle.addEventListener("click", () => {
       const next = openCategoryId === category.id ? null : category.id;
       if (next !== openCategoryId) closeProject();
-      openCategoryId = next;
-      renderArchive();
-      archive
-        .querySelector(
-          `[data-category-id="${CSS.escape(category.id)}"] .format-toggle`,
-        )
-        ?.focus({ preventScroll: true });
-      updateHeader();
+      setOpenCategory(next);
     });
     const gallery = item.querySelector(".format-gallery");
     if (gallery) {
-      gallery.classList.toggle(
-        "is-portrait",
-        projects.every((p) => p.height > p.width),
-      );
       projects.forEach((project, projectIndex) =>
         gallery.append(createTile(project, projectIndex)),
       );
@@ -184,7 +239,7 @@ function createTile(project, index) {
       ? `https://i.ytimg.com/vi/${encodeURIComponent(project.youtubeId)}/hqdefault.jpg`
       : "");
   tile.innerHTML = `
-    <span class="tile-image"><img src="${escapeHtml(poster)}" alt="" loading="lazy" decoding="async"></span>
+    <span class="tile-image" style="--poster:url(${escapeHtml(JSON.stringify(poster))})"><img src="${escapeHtml(poster)}" alt="" loading="lazy" decoding="async"></span>
     <span class="tile-caption"><span>${String(index + 1).padStart(2, "0")}</span><strong>${escapeHtml(localized(project.title))}</strong><i aria-hidden="true">↗</i></span>`;
   tile.addEventListener("click", () => openProject(project, tile));
   listItem.append(tile);
@@ -312,7 +367,7 @@ window.addEventListener("scroll", updateHeader, { passive: true });
 window.addEventListener("resize", updateHeader, { passive: true });
 updateHeader();
 const launchHero = () =>
-  import("./hero.js?v=1").then(({ startHero }) => startHero()).catch(() => {});
+  import("./hero.js?v=2").then(({ startHero }) => startHero()).catch(() => {});
 if ("requestIdleCallback" in window)
   window.requestIdleCallback(launchHero, { timeout: 1200 });
 else window.setTimeout(launchHero, 250);
