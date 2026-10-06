@@ -918,7 +918,8 @@
     content: '+';
     font-size: 15px; letter-spacing: 0; line-height: 1;
   }
-  .work-ficha[open] summary::after{ content: '–'; }
+  .work-ficha[open]:not(.fechando) summary::after{ content: '–'; }
+  .work-ficha .ficha-body{ will-change: height, opacity; }
   .work-ficha summary:hover{ color: #fff; }
   .work-ficha .fgroup{ margin-top: 1.4em; }
   .work-ficha .fgroup h4{
@@ -2091,15 +2092,17 @@ const OBRAS = {
        fica aqui dentro, fechada, pra não competir com ela — mas existindo, que
        é o que a equipe merece e o que festival pede. */
     if (obra.fichaCompleta && obra.fichaCompleta.length){
-      html += '<details class="work-ficha"><summary>' + esc(t.fullCredits) + '</summary>';
+      html += '<details class="work-ficha"><summary>' + esc(t.fullCredits) + '</summary><div class="ficha-body">';
       obra.fichaCompleta.forEach(function(g){
         html += '<div class="fgroup"><h4>' + esc(g[0]) + '</h4>';
         g[1].forEach(function(l){ html += '<div class="line">' + esc(l) + '</div>'; });
         html += '</div>';
       });
-      html += '</details>';
+      html += '</div></details>';
     }
     elMeta.innerHTML = html;
+    var detFicha = elMeta.querySelector('.work-ficha');
+    if (detFicha) suavizarFicha(detFicha);
 
     // fundo: still do projeto, ou a estática de TV quando ainda está em pós
     var emPos = !obra.fundo;
@@ -2162,6 +2165,58 @@ const OBRAS = {
   function close(){
     document.body.classList.remove('work-open');
     window.dispatchEvent(new Event('scroll'));
+  }
+
+  /* O <details> nativo abre e fecha de uma vez. Aqui a gente segura o clique,
+     anima altura e opacidade do corpo e só então deixa o atributo open mudar.
+     Se a pessoa clicar de novo no meio da animação, ela volta de onde parou. */
+  function suavizarFicha(det){
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (!det.animate) return;
+    var sum = det.querySelector('summary');
+    var body = det.querySelector('.ficha-body');
+    var anim = null, fechando = false;
+    var DUR = 560, EASE = 'cubic-bezier(.22,.61,.36,1)';
+
+    function roda(h0, h1, o0, o1){
+      body.style.overflow = 'hidden';
+      var a = body.animate(
+        [{ height: h0 + 'px', opacity: o0 }, { height: h1 + 'px', opacity: o1 }],
+        { duration: DUR, easing: EASE }
+      );
+      anim = a;
+      a.onfinish = function(){
+        if (anim !== a) return;
+        anim = null;
+        body.style.overflow = '';
+        if (fechando){ det.open = false; det.classList.remove('fechando'); fechando = false; }
+      };
+    }
+
+    sum.addEventListener('click', function(e){
+      e.preventDefault();
+      var h0, o0;
+      if (anim){
+        h0 = body.offsetHeight;
+        o0 = parseFloat(getComputedStyle(body).opacity);
+        var velha = anim; anim = null; velha.onfinish = null; velha.cancel();
+      } else if (det.open){
+        h0 = body.offsetHeight; o0 = 1;
+      } else {
+        h0 = 0; o0 = 0;
+      }
+      var abrindo = !det.open || fechando;
+      if (abrindo){
+        fechando = false;
+        det.classList.remove('fechando');
+        det.open = true;
+        roda(h0, body.scrollHeight, o0, 1);
+      } else {
+        fechando = true;
+        det.classList.add('fechando');
+        roda(h0, 0, o0, 0);
+      }
+    });
   }
 
   var FADE = 620;   // tem que bater com a transição do CSS
