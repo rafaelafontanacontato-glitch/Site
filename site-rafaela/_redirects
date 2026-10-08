@@ -4,5 +4,9 @@
 # Existing files shadow this rule; unknown short-form URLs stay in this site.
 /shortform/*  /shortform/404.html     404
 
+# Página só de fotografia.
+/fotografia    /fotografia/             301
+/fotografia/   /fotografia/index.html   200
+
 # Existing cinema fallback and hash-based project links are preserved.
 /*  /index.html  200
