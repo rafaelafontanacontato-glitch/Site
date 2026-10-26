@@ -1395,6 +1395,7 @@
       lastFocus = document.activeElement;
       modal.classList.remove('embed');
       embedBox.innerHTML = '';
+      if (window.carregarShowreelCompleto) window.carregarShowreelCompleto();
       abrirModal();
       video.currentTime = 0;
       var pr = video.play();
@@ -1590,6 +1591,41 @@
   function b64ToUint16(b64){ return new Uint16Array(b64ToBytes(b64).buffer); }
   function b64ToUint32(b64){ return new Uint32Array(b64ToBytes(b64).buffer); }
 
+  /* scissors.js formato 2: tudo num bloco só de inteiros de 16 bits, grupo
+     atrás de grupo. Em cada grupo vêm x, y, z das posições, depois x, y, z das
+     normais, depois os índices, sempre como diferença do valor anterior
+     (zigzag), dobrada pra caber em 16 bits. Aqui a gente desfaz isso e devolve os mesmos Float32 de antes. */
+  function lerTesoura(M){
+    if (M.formato !== 2){
+      return M.groups.map(function(g){
+        return {
+          g: g,
+          positions: b64ToFloat32(g.positions_b64),
+          normals: b64ToFloat32(g.normals_b64),
+          indices: g.indexType === 'Uint16' ? b64ToUint16(g.indices_b64) : b64ToUint32(g.indices_b64)
+        };
+      });
+    }
+    const raw = b64ToUint16(M.dados);
+    let o = 0;
+    function unzz(u){ return (u >>> 1) ^ -(u & 1); }
+    return M.groups.map(function(g){
+      const V = g.v, positions = new Float32Array(V * 3), normals = new Float32Array(V * 3);
+      for (let a = 0; a < 3; a++){
+        let q = 0; const h = M.escala[a] / 32767, c = M.bboxCenter[a];
+        for (let i = 0; i < V; i++){ q = (q + unzz(raw[o++])) << 16 >> 16; positions[i * 3 + a] = q * h + c; }
+      }
+      for (let a = 0; a < 3; a++){
+        let q = 0;
+        for (let i = 0; i < V; i++){ q = (q + unzz(raw[o++])) << 16 >> 16; normals[i * 3 + a] = q / 32767; }
+      }
+      const indices = new Uint16Array(g.i);
+      let q = 0;
+      for (let i = 0; i < g.i; i++){ q = (q + unzz(raw[o++])) & 0xffff; indices[i] = q; }
+      return { g: g, positions: positions, normals: normals, indices: indices };
+    });
+  }
+
   const canvas = document.getElementById('gl');
   const heroEl = document.getElementById('hero');
 
@@ -1719,10 +1755,11 @@
       bboxSize[0]*bboxSize[0] + bboxSize[1]*bboxSize[1] + bboxSize[2]*bboxSize[2]
     );
 
-    MANIFEST.groups.forEach(function(g){
-      const positions = b64ToFloat32(g.positions_b64);
-      const normals = b64ToFloat32(g.normals_b64);
-      const indices = g.indexType === 'Uint16' ? b64ToUint16(g.indices_b64) : b64ToUint32(g.indices_b64);
+    lerTesoura(MANIFEST).forEach(function(parte){
+      const g = parte.g;
+      const positions = parte.positions;
+      const normals = parte.normals;
+      const indices = parte.indices;
 
       const geometry = new THREE.BufferGeometry();
       geometry.setAttribute('position', new THREE.BufferAttribute(positions,3));
@@ -1878,7 +1915,7 @@ var lang = 'pt';
 
    fundo: o still que vira o fundo desfocado da página. Se a obra ainda está em
    pós, deixe o campo vazio: entra sozinho o gif de estrada noturna
-   (assets/em-pos.gif), em preto e branco e desfocado.                                          */
+   (assets/em-pos.webp), em preto e branco e desfocado.                                          */
 const OBRAS = {
   'irmas-de-sangue': {
     titulo: 'Irmãs de Sangue',
@@ -2079,7 +2116,7 @@ const OBRAS = {
   var elFrame = document.getElementById('work-trailer-frame');
   var elStill = document.getElementById('work-stills');
   var elBg    = document.getElementById('work-bg');
-  var ESTATICA = 'assets/em-pos.gif';
+  var ESTATICA = 'assets/em-pos.webp';
   if (!page) return;
 
   function esc(s){
@@ -2336,15 +2373,16 @@ const OBRAS = {
   });
 
   /* troca as fontes de um <video> e recarrega. O showreel tem quatro arquivos:
-     o trecho de 14s que roda de fundo (com webm de reserva) e o showreel
+     o trecho de 14s que roda de fundo (webm primeiro, que é menos da metade do
+     peso; o mp4 fica de reserva pra navegador que não toca webm) e o showreel
      completo que abre no play — cada um em português e em inglês. */
   var SHOWREEL = {
     pt: {
-      loop: ['assets/showreel-loop-pt.mp4', 'assets/showreel-loop-pt.webm'],
+      loop: ['assets/showreel-loop-pt.webm', 'assets/showreel-loop-pt.mp4'],
       full: ['assets/showreel-pt.mp4']
     },
     en: {
-      loop: ['assets/showreel-loop-en.mp4', 'assets/showreel-loop-en.webm'],
+      loop: ['assets/showreel-loop-en.webm', 'assets/showreel-loop-en.mp4'],
       full: ['assets/showreel-en.mp4']
     }
   };
@@ -2358,11 +2396,22 @@ const OBRAS = {
     if (tocando) { var pr = el.play(); if (pr && pr.catch) pr.catch(function(){}); }
   }
 
+  window.carregarShowreelCompleto = function(){
+    var el = document.getElementById('reel-video');
+    if (!el || el.getAttribute('data-carregado') === lang) return;
+    setVideo(el, (SHOWREEL[lang] || SHOWREEL.pt).full);
+    el.setAttribute('data-carregado', lang);
+  };
+
   function aplicarIdioma(){
     var t = TRAD[lang];
     var sr = SHOWREEL[lang] || SHOWREEL.pt;
     setVideo(document.getElementById('reel-bg'), sr.loop);
-    setVideo(document.getElementById('reel-video'), sr.full);
+    // o showreel completo (16 MB) só recebe o arquivo quando a pessoa aperta o
+    // play: sem isso o navegador começava a baixar ele em toda visita. Se o
+    // pop-up já estiver aberto na troca de idioma, troca na hora.
+    var reelVid = document.getElementById('reel-video');
+    if (reelVid && reelVid.getAttribute('data-carregado')){ setVideo(reelVid, sr.full); reelVid.setAttribute('data-carregado', lang); }
     document.documentElement.lang = (lang === 'en' ? 'en' : 'pt-BR');
     Array.prototype.forEach.call(document.querySelectorAll('[data-i18n]'), function(el){
       var v = t[el.getAttribute('data-i18n')];
@@ -2395,8 +2444,9 @@ const OBRAS = {
       vid.muted = true; vid.loop = true; vid.playsInline = true;
       vid.setAttribute('muted',''); vid.setAttribute('playsinline','');
       vid.preload = 'auto';
-      vid.innerHTML = '<source src="' + mp4 + '" type="video/mp4">' +
-                      (webm ? '<source src="' + webm + '" type="video/webm">' : '');
+      // webm primeiro: é bem mais leve, e quem não toca webm cai no mp4
+      vid.innerHTML = (webm ? '<source src="' + webm + '" type="video/webm">' : '') +
+                      '<source src="' + mp4 + '" type="video/mp4">';
       vid.addEventListener('canplay', function(){ vid.classList.add('pronto'); });
       thumb.appendChild(vid);
     }
