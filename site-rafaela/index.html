@@ -1154,6 +1154,7 @@
   const siteNav = document.getElementById('site-nav');
   const siteHeader = document.getElementById('site-header');
 
+  const NAME_END = 0.8; // fração da rolagem em que o nome termina de encolher
   const TRANSITION = 780; // px of scroll to complete the animation (slower, smoother)
 
   var MOBILE_BP = 780;   // TEM que ser o mesmo do @media do CSS
@@ -1320,9 +1321,13 @@
       ? 1
       : Math.min(Math.max(y / TRANSITION, 0), 1);
     const p = easeInOutCubic(pLinear);
+    // o nome termina de encolher um pouco antes (aos 80% da rolagem); o subtítulo
+    // e o menu usam o resto pra subir e encaixar do lado dele. Assim os dois
+    // terminam juntos, no mesmo ponto de antes, e o frame final é idêntico.
+    const pName = easeInOutCubic(Math.min(pLinear / NAME_END, 1));
 
     // --- #brand-name: centered + big -> docked at the header's left padding, small ---
-    const fontSize = lerp(heroFontPx(), NAV_FONT_PX, p);
+    const fontSize = lerp(heroFontPx(), NAV_FONT_PX, pName);
     brandName.style.fontSize = fontSize.toFixed(1) + 'px';
     brandName.style.transform = 'none';
     const w = brandName.offsetWidth; // measured AFTER font-size is applied
@@ -1330,8 +1335,8 @@
     const finalNameLeft = headerPadPx();
     // land optically level with #brand-sub: match ink centres, not box centres
     const finalNameTop = subRestCenterY - nameInkOffset;
-    const nameTop = lerp(heroTopPx(), finalNameTop, p);
-    const nameLeft = lerp(centeredLeft, finalNameLeft, p);
+    const nameTop = lerp(heroTopPx(), finalNameTop, pName);
+    const nameLeft = lerp(centeredLeft, finalNameLeft, pName);
     brandName.style.top = nameTop.toFixed(1) + 'px';
     brandName.style.left = nameLeft.toFixed(1) + 'px';
 
