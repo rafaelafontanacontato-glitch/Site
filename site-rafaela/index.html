@@ -1255,6 +1255,10 @@
     brandName.style.transform = prevNameTransform;
 
     brandSub.style.marginLeft = isMobileView() ? '' : (nameSmallWidth + NAME_SUB_GAP) + 'px';
+    // posição final (de repouso) do subtítulo, já com o recuo aplicado; usada pra
+    // ele nunca ficar embaixo do nome enquanto o nome ainda está grande
+    const subRest = brandSub.getBoundingClientRect();
+    subRestBox = { top: subRest.top, left: subRest.left, right: subRest.right };
     brandSub.style.transform = prevSubTransform;
 
     // Align #site-nav's right end (the "PT") with the right edge of the big centered
@@ -1268,6 +1272,30 @@
     const navDefaultRight = window.innerWidth - headerPadPx();
     const navInset = Math.max(navDefaultRight - titleRightEdge, 0);
     siteNav.style.marginRight = navInset.toFixed(1) + 'px';
+
+    const prevNavTransform = siteNav.style.transform;
+    siteNav.style.transform = 'none';
+    const navRest = siteNav.getBoundingClientRect();
+    navRestBox = { top: navRest.top, left: navRest.left, right: navRest.right };
+    siteNav.style.transform = prevNavTransform;
+  }
+
+  /* Garante que o subtítulo e o menu nunca fiquem embaixo do nome enquanto ele
+     encolhe: se o nome ainda ocupa a faixa horizontal deles, eles esperam logo
+     abaixo da base do nome; quando o nome já passou (ficou pequeno o bastante),
+     eles sobem pra linha do cabeçalho. A transição é contínua, sem pulo. */
+  let subRestBox = null, navRestBox = null;
+  const CLEAR_GAP = 16;   // px entre a base do nome e o topo do subtítulo/menu
+  const SIDE_GAP = 4;     // folga lateral considerada como "encostando"
+  const SIDE_RAMP = 18;   // px de afastamento lateral pra liberar a subida
+  function clearOffset(base, rest, nameRect){
+    if (!rest) return base;
+    // quanto o nome invade a faixa horizontal do elemento (1 = invade, 0 = livre)
+    const invadeDireita = (nameRect.right - (rest.left - SIDE_GAP - SIDE_RAMP)) / SIDE_RAMP;
+    const invadeEsquerda = ((rest.right + SIDE_GAP + SIDE_RAMP) - nameRect.left) / SIDE_RAMP;
+    const ov = Math.min(Math.max(Math.min(invadeDireita, invadeEsquerda), 0), 1);
+    const need = nameRect.bottom + CLEAR_GAP - rest.top;
+    return Math.max(base, need * ov);
   }
 
   function updateHeaderAnimation(){
@@ -1312,8 +1340,11 @@
 
     // --- #brand-sub and #site-nav: both rise up from below the name into the header row ---
     const subOffset = lerp(subRiseOffsetPx(), 0, p);
-    brandSub.style.transform = 'translateY(' + subOffset.toFixed(1) + 'px)';
-    siteNav.style.transform = 'translateY(' + subOffset.toFixed(1) + 'px)';
+    const nameRect = { left: nameLeft, right: nameLeft + w, bottom: nameTop + brandName.offsetHeight };
+    const subY = clearOffset(subOffset, subRestBox, nameRect);
+    const navY = clearOffset(subOffset, navRestBox, nameRect);
+    brandSub.style.transform = 'translateY(' + subY.toFixed(1) + 'px)';
+    siteNav.style.transform = 'translateY(' + navY.toFixed(1) + 'px)';
 
     // --- header bar: fades in as the navbar assembles ---
     const bgAlpha = p * p;
