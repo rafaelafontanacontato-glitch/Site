@@ -630,6 +630,7 @@
   #trabalhos .grid .card:nth-child(1) .thumb{ aspect-ratio: 16/9.4; }
   #trabalhos .grid .card:nth-child(2) .thumb{ aspect-ratio: 16/10; }
   #trabalhos .grid .card:nth-child(3) .thumb{ aspect-ratio: 4/3; }
+  #trabalhos .grid .card:nth-child(4) .thumb{ aspect-ratio: 16/9; }
 
   /* ---- stack everything on narrow screens ---- */
   @media (max-width: 780px){
@@ -1096,6 +1097,13 @@
       <div class="cap">
         <span class="l1">Pique Novo</span>
         <span class="l2" data-i18n="fmtVideo">Videoclipe</span>
+      </div>
+    </a>
+    <a class="card" href="#/obra/what-instinct-cant-reach">
+      <div class="thumb" data-preview="assets/hover-editfest.mp4" data-preview-webm="assets/hover-editfest.webm"><img class="lazy fade-in" loading="lazy" decoding="async" src="assets/editfest-capa.jpg" alt="What Instinct Can't Reach" /></div>
+      <div class="cap">
+        <span class="l1">What Instinct Can't Reach</span>
+        <span class="l2" data-i18n="fmtAd">Publicidade</span>
       </div>
     </a>
   </div>
@@ -1882,7 +1890,7 @@ const TRAD = {
     brandSub: 'Montadora e<br>Assistente de Montagem',
     navWorks: 'Trabalhos', navContact: 'Contato',
     worksTitle: 'Trabalhos', bioTitle: 'Bio',
-    fmtFeature: 'Longa-metragem', fmtVideo: 'Videoclipe',
+    fmtFeature: 'Longa-metragem', fmtVideo: 'Videoclipe', fmtAd: 'Publicidade',
     footerRole: 'Montadora e Assistente de Montagem',
     backWorks: 'Trabalhos',
     bioText: 'Rafaela Fontana é formada em Design Gráfico e vem construindo sua trajetória na montagem cinematográfica. Estreou como montadora de longa-metragem em Irmãs de Sangue, um trabalho de ficção que se tornou a base de sua formação prática e profissional. Rafaela acredita que a montagem é uma ferramenta ativa, capaz de resolver problemas na própria matéria-prima do filme, e que esse tipo de trabalho só atinge todo seu potencial quando nasce de uma colaboração próxima e verdadeira com o diretor.',
@@ -1894,7 +1902,7 @@ const TRAD = {
     brandSub: 'Film Editor &<br>Assistant Editor',
     navWorks: 'Works', navContact: 'Contact',
     worksTitle: 'Works', bioTitle: 'Bio',
-    fmtFeature: 'Feature film', fmtVideo: 'Music video',
+    fmtFeature: 'Feature film', fmtVideo: 'Music video', fmtAd: 'Advertising',
     footerRole: 'Film Editor and Assistant Editor',
     backWorks: 'Works',
     bioText: 'Rafaela Fontana holds a degree in Graphic Design and has been building her career in film editing. She made her feature-film debut as editor on Irmãs de Sangue, a fiction work that became the foundation of her practical and professional training. Rafaela believes editing is an active tool, able to solve problems in the film\'s own raw material, and that this kind of work only reaches its full potential when it grows out of a close, honest collaboration with the director.',
@@ -2103,6 +2111,36 @@ const OBRAS = {
         'Color — Rafaela Fontana',
         'Storyboard — Rafaela Fontana'
       ]]
+    ]
+  },
+  'what-instinct-cant-reach': {
+    titulo: "What Instinct Can't Reach",
+    ficha: 'Publicidade / Filmsupply Editfest / 2026',
+    creditos: [
+      ['Roteiro e montagem', 'Rafaela Fontana'],
+      ['Imagens', 'Acervo Filmsupply']
+    ],
+    sinopse: 'Tem gente que sente a tempestade antes dela chegar: na cicatriz antiga que começa a coçar, no bicho que fica inquieto, no cheiro de terra molhada. Um comercial sobre esse instinto, e sobre uma proteção que não espera a dor aparecer.',
+    projeto: 'Feito para o Filmsupply Editfest 2026, competição de montagem em que cada editor cria uma peça só com imagens e músicas do acervo da Filmsupply. Roteiro e montagem são meus, em cima de material filmado por outras pessoas, o que faz da montagem o trabalho principal da peça.',
+    festivais: [],
+    selo: { texto: 'Finalista da categoria Advertisement do Filmsupply Editfest 2026' },
+    fundo: 'assets/editfest-fundo.jpg',
+    trailer: 'I8JiPjSzu9I', trailerTipo: 'youtube', videoTitulo: '',
+    videoCapa: 'assets/editfest-capa-video.jpg',
+    en: {
+      ficha: 'Advertising / Filmsupply Editfest / 2026',
+      creditos: [
+        ['Screenplay and editing', 'Rafaela Fontana'],
+        ['Footage', 'Filmsupply library']
+      ],
+      sinopse: "Some people feel the storm before it arrives: in an old scar that starts to itch, in an animal that turns restless, in the smell of wet earth. An ad about that instinct, and about protection that doesn't wait for the ache.",
+      projeto: "Made for Filmsupply Editfest 2026, an editing competition in which each editor builds a piece using only footage and music from the Filmsupply library. The script and the edit are mine, working with material shot by other people, which makes editing the core of the piece.",
+      selo: { texto: 'Finalist in the Advertisement category at Filmsupply Editfest 2026' }
+    },
+    stills: [
+      'assets/editfest-still-1.jpg',
+      'assets/editfest-still-2.jpg',
+      'assets/editfest-still-3.jpg'
     ]
   }
 };
