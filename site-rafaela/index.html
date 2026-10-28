@@ -861,7 +861,9 @@
   .work-head{ max-width: 760px; margin: 0 auto; text-align: left; }
   .work-head h1{
     font-family:'Antonio', sans-serif; font-weight:600; text-transform:uppercase;
-    font-size: clamp(40px,6.4vw,92px); line-height:.95; letter-spacing:.005em;
+    /* 1.22 e não .95: em título de várias linhas, a vírgula e o Ç da linha de
+       cima encostavam nas letras da linha de baixo */
+    font-size: clamp(40px,6.4vw,92px); line-height:1.22; letter-spacing:.005em;
     text-wrap: balance;
     margin-bottom: clamp(20px,2.6vw,34px);
   }
@@ -2189,7 +2191,8 @@ const OBRAS = {
       ['Imagens', 'Acervo Museu da Pessoa'],
       ['Montagem', 'Rafaela Fontana']
     ],
-    sinopse: 'Olympia Gomes de Soutello abre a conversa com a oração que faz pra encontrar o que perdeu. Daí a memória vai e volta: a pensão de freiras portuguesas, os camarões pescados nas poças da maré, a freira que deu o casaco novo pra Nossa Senhora e a chegada a São Paulo, onde ela andava de bonde sozinha. Ela e Deus.',
+    sinopse: 'Olympia Gomes de Soutello abre a conversa com a oração que faz pra encontrar o que perdeu. A pensão de freiras portuguesas, os camarões pescados nas poças da maré, a freira que deu o casaco novo pra Nossa Senhora e a chegada a São Paulo, onde ela andava de bonde sozinha. Ela e Deus.',
+    selo: { icone: 'assets/museu-da-pessoa.png', largo: true, texto: 'Selecionado para a 6ª Mostra Audiovisual EmVelhoSer, do Museu da Pessoa' },
     projeto: 'Feito para a 6ª Mostra Audiovisual EmVelhoSer, do Museu da Pessoa. Cada participante escolhe uma das histórias de vida do acervo do museu e cria uma nova leitura audiovisual a partir dela. Este curta foi montado a partir da entrevista de Olympia Gomes de Soutello.',
     projetoLink: { url: 'https://museudapessoa.org/', label: 'museudapessoa.org' },
     festivais: [],
@@ -2203,7 +2206,8 @@ const OBRAS = {
         ['Footage', 'Museu da Pessoa archive'],
         ['Editing', 'Rafaela Fontana']
       ],
-      sinopse: 'Olympia Gomes de Soutello opens the conversation with the prayer she says to find what she has lost. From there her memory drifts back and forth: the boarding house run by Portuguese nuns, the shrimp caught in tide pools, the nun who gave her new coat to Our Lady, and her arrival in São Paulo, where she rode the tram alone. Just her and God.',
+      sinopse: 'Olympia Gomes de Soutello opens the conversation with the prayer she says to find what she has lost. The boarding house run by Portuguese nuns, the shrimp caught in tide pools, the nun who gave her new coat to Our Lady, and her arrival in São Paulo, where she rode the tram alone. Just her and God.',
+      selo: { icone: 'assets/museu-da-pessoa.png', largo: true, texto: 'Selected for the 6th EmVelhoSer Audiovisual Showcase at Museu da Pessoa' },
       projeto: 'Made for the 6th EmVelhoSer Audiovisual Showcase at Museu da Pessoa, a Brazilian museum of life stories. Each participant picks one life story from the museum\'s archive and creates a new audiovisual reading of it. This short was edited from the interview with Olympia Gomes de Soutello.'
     },
     stills: [
