@@ -631,6 +631,7 @@
   #trabalhos .grid .card:nth-child(2) .thumb{ aspect-ratio: 16/10; }
   #trabalhos .grid .card:nth-child(3) .thumb{ aspect-ratio: 4/3; }
   #trabalhos .grid .card:nth-child(4) .thumb{ aspect-ratio: 16/9; }
+  #trabalhos .grid .card:nth-child(5) .thumb{ aspect-ratio: 4/3; }
 
   /* ---- stack everything on narrow screens ---- */
   @media (max-width: 780px){
@@ -1106,6 +1107,13 @@
         <span class="l2" data-i18n="fmtAd">Publicidade</span>
       </div>
     </a>
+    <a class="card" href="#/obra/pelas-chagas-de-cristo">
+      <div class="thumb" data-preview="assets/hover-pelas-chagas.mp4" data-preview-webm="assets/hover-pelas-chagas.webm"><img class="lazy fade-in" loading="lazy" decoding="async" src="assets/pelas-chagas-capa.jpg" alt="Pelas chagas de Cristo, faça que eu encontre o que perdi" /></div>
+      <div class="cap">
+        <span class="l1">Pelas chagas de Cristo, faça que eu encontre o que perdi</span>
+        <span class="l2" data-i18n="fmtDoc">Curta documental</span>
+      </div>
+    </a>
   </div>
 </section>
 
@@ -1440,9 +1448,30 @@
       abrirModal();
     }
 
+    /* obra com vídeo hospedado no próprio site: usa o mesmo <video> do
+       showreel. Marca o player pra que o showreel recarregue o arquivo dele
+       na próxima vez que alguém apertar o play lá em cima. */
+    function openArquivo(btn){
+      lastFocus = document.activeElement;
+      modal.classList.remove('embed');
+      embedBox.innerHTML = '';
+      var src = btn.getAttribute('data-arquivo');
+      if (video.getAttribute('data-carregado') !== 'arquivo:' + src){
+        video.innerHTML = '<source src="' + src + '" type="video/mp4">';
+        video.load();
+        video.setAttribute('data-carregado', 'arquivo:' + src);
+      }
+      abrirModal();
+      video.currentTime = 0;
+      var pr = video.play();
+      if (pr && pr.catch) pr.catch(function(){});
+    }
+
     document.addEventListener('click', function(e){
       var btn = e.target.closest && e.target.closest('.frame-link[data-embed]');
-      if (btn){ e.preventDefault(); openEmbed(btn); }
+      if (btn){ e.preventDefault(); openEmbed(btn); return; }
+      var arq = e.target.closest && e.target.closest('.frame-link[data-arquivo]');
+      if (arq){ e.preventDefault(); openArquivo(arq); }
     });
 
     function closeReel(){
@@ -1890,24 +1919,24 @@ const TRAD = {
     brandSub: 'Montadora e<br>Assistente de Montagem',
     navWorks: 'Trabalhos', navContact: 'Contato',
     worksTitle: 'Trabalhos', bioTitle: 'Bio',
-    fmtFeature: 'Longa-metragem', fmtVideo: 'Videoclipe', fmtAd: 'Publicidade',
+    fmtFeature: 'Longa-metragem', fmtVideo: 'Videoclipe', fmtAd: 'Publicidade', fmtDoc: 'Curta documental',
     footerRole: 'Montadora e Assistente de Montagem',
     backWorks: 'Trabalhos',
     bioText: 'Rafaela Fontana é formada em Design Gráfico e vem construindo sua trajetória na montagem cinematográfica. Estreou como montadora de longa-metragem em Irmãs de Sangue, um trabalho de ficção que se tornou a base de sua formação prática e profissional. Rafaela acredita que a montagem é uma ferramenta ativa, capaz de resolver problemas na própria matéria-prima do filme, e que esse tipo de trabalho só atinge todo seu potencial quando nasce de uma colaboração próxima e verdadeira com o diretor.',
     synopsis: 'Sinopse', aboutProject: 'Sobre o projeto', festivals: 'Festivais',
-    fullCredits: 'Ficha técnica completa', watch: 'Assistir no YouTube ↗', trailer: 'Trailer',
+    fullCredits: 'Ficha técnica completa', watch: 'Assistir no YouTube ↗', watchHere: 'Assistir', trailer: 'Trailer',
     reelLabel: 'Assistir showreel', watchReel: 'Assistir showreel'
   },
   en: {
     brandSub: 'Film Editor &<br>Assistant Editor',
     navWorks: 'Works', navContact: 'Contact',
     worksTitle: 'Works', bioTitle: 'Bio',
-    fmtFeature: 'Feature film', fmtVideo: 'Music video', fmtAd: 'Advertising',
+    fmtFeature: 'Feature film', fmtVideo: 'Music video', fmtAd: 'Advertising', fmtDoc: 'Short documentary',
     footerRole: 'Film Editor and Assistant Editor',
     backWorks: 'Works',
     bioText: 'Rafaela Fontana holds a degree in Graphic Design and has been building her career in film editing. She made her feature-film debut as editor on Irmãs de Sangue, a fiction work that became the foundation of her practical and professional training. Rafaela believes editing is an active tool, able to solve problems in the film\'s own raw material, and that this kind of work only reaches its full potential when it grows out of a close, honest collaboration with the director.',
     synopsis: 'Synopsis', aboutProject: 'About the project', festivals: 'Festivals',
-    fullCredits: 'Full credits', watch: 'Watch on YouTube ↗', trailer: 'Trailer',
+    fullCredits: 'Full credits', watch: 'Watch on YouTube ↗', watchHere: 'Watch', trailer: 'Trailer',
     reelLabel: 'Watch showreel', watchReel: 'Watch showreel'
   }
 };
@@ -2118,29 +2147,66 @@ const OBRAS = {
     ficha: 'Publicidade / Filmsupply Editfest / 2026',
     creditos: [
       ['Roteiro e montagem', 'Rafaela Fontana'],
-      ['Imagens', 'Acervo Filmsupply']
+      ['Narração', 'Ken Kowalik'],
+      ['Imagens', 'Acervo Filmsupply'],
+      ['Música', 'Musicbed']
     ],
-    sinopse: 'Tem gente que sente a tempestade antes dela chegar: na cicatriz antiga que começa a coçar, no bicho que fica inquieto, no cheiro de terra molhada. Um comercial sobre esse instinto, e sobre uma proteção que não espera a dor aparecer.',
-    projeto: 'Feito para o Filmsupply Editfest 2026, competição de montagem em que cada editor cria uma peça só com imagens e músicas do acervo da Filmsupply. Roteiro e montagem são meus, em cima de material filmado por outras pessoas, o que faz da montagem o trabalho principal da peça.',
+    sinopse: 'Às vezes a cicatriz coça, os bichos ficam inquietos e o cheiro deduz que logo vem a tempestade. Um comercial sobre instinto e proteção que não espera a dor aparecer.',
+    projeto: 'Criado para o Filmsupply Editfest 2026, competição de montagem da Filmsupply. Cada participante tem acesso ao acervo de imagens da Filmsupply e às músicas da Musicbed, e precisa construir uma peça inteira só com esse material, do roteiro ao corte final, sem filmar nada. Na categoria Advertisement, o desafio é criar um comercial completo para uma marca. What Instinct Can\'t Reach ficou entre os cinco finalistas da categoria.',
     festivais: [],
     selo: { texto: 'Finalista da categoria Advertisement do Filmsupply Editfest 2026' },
     fundo: 'assets/editfest-fundo.jpg',
-    trailer: 'I8JiPjSzu9I', trailerTipo: 'youtube', videoTitulo: '',
-    videoCapa: 'assets/editfest-capa-video.jpg',
+    // em português toca a versão com legenda em PT (arquivo do site);
+    // em inglês, o vídeo oficial da competição no YouTube
+    trailer: 'assets/editfest-pt.mp4', trailerTipo: 'arquivo', videoTitulo: '',
+    videoCapa: 'assets/editfest-capa.jpg',
     en: {
+      trailer: 'I8JiPjSzu9I', trailerTipo: 'youtube',
       ficha: 'Advertising / Filmsupply Editfest / 2026',
       creditos: [
         ['Screenplay and editing', 'Rafaela Fontana'],
-        ['Footage', 'Filmsupply library']
+        ['Narration', 'Ken Kowalik'],
+        ['Footage', 'Filmsupply library'],
+        ['Music', 'Musicbed']
       ],
-      sinopse: "Some people feel the storm before it arrives: in an old scar that starts to itch, in an animal that turns restless, in the smell of wet earth. An ad about that instinct, and about protection that doesn't wait for the ache.",
-      projeto: "Made for Filmsupply Editfest 2026, an editing competition in which each editor builds a piece using only footage and music from the Filmsupply library. The script and the edit are mine, working with material shot by other people, which makes editing the core of the piece.",
+      sinopse: "Sometimes the scar itches, the animals grow restless and the smell tells you a storm is coming. An ad about instinct, and about protection that doesn't wait for the ache.",
+      projeto: "Created for Filmsupply Editfest 2026, Filmsupply's editing competition. Each entrant gets access to the Filmsupply footage library and Musicbed's music, and has to build a complete piece from that material alone, from script to final cut, without shooting anything. In the Advertisement category, the brief is to create a full commercial for a brand. What Instinct Can't Reach was one of the five finalists in the category.",
       selo: { texto: 'Finalist in the Advertisement category at Filmsupply Editfest 2026' }
     },
     stills: [
       'assets/editfest-still-1.jpg',
       'assets/editfest-still-2.jpg',
       'assets/editfest-still-3.jpg'
+    ]
+  },
+  'pelas-chagas-de-cristo': {
+    titulo: 'Pelas chagas de Cristo, faça que eu encontre o que perdi',
+    ficha: 'Curta documental / Museu da Pessoa / 2026 / Brasil',
+    creditos: [
+      ['Entrevistada', 'Olympia Gomes de Soutello'],
+      ['Imagens', 'Acervo Museu da Pessoa'],
+      ['Montagem', 'Rafaela Fontana']
+    ],
+    sinopse: 'Olympia Gomes de Soutello abre a conversa com a oração que faz pra encontrar o que perdeu. Daí a memória vai e volta: a pensão de freiras portuguesas, os camarões pescados nas poças da maré, a freira que deu o casaco novo pra Nossa Senhora e a chegada a São Paulo, onde ela andava de bonde sozinha. Ela e Deus.',
+    projeto: 'Feito para a 6ª Mostra Audiovisual EmVelhoSer, do Museu da Pessoa. Cada participante escolhe uma das histórias de vida do acervo do museu e cria uma nova leitura audiovisual a partir dela. Este curta foi montado a partir da entrevista de Olympia Gomes de Soutello.',
+    projetoLink: { url: 'https://museudapessoa.org/', label: 'museudapessoa.org' },
+    festivais: [],
+    fundo: 'assets/pelas-chagas-fundo.jpg',
+    trailer: 'assets/pelas-chagas-de-cristo.mp4', trailerTipo: 'arquivo', videoTitulo: '',
+    videoCapa: 'assets/pelas-chagas-capa.jpg',
+    en: {
+      ficha: 'Short documentary / Museu da Pessoa / 2026 / Brazil',
+      creditos: [
+        ['Interviewee', 'Olympia Gomes de Soutello'],
+        ['Footage', 'Museu da Pessoa archive'],
+        ['Editing', 'Rafaela Fontana']
+      ],
+      sinopse: 'Olympia Gomes de Soutello opens the conversation with the prayer she says to find what she has lost. From there her memory drifts back and forth: the boarding house run by Portuguese nuns, the shrimp caught in tide pools, the nun who gave her new coat to Our Lady, and her arrival in São Paulo, where she rode the tram alone. Just her and God.',
+      projeto: 'Made for the 6th EmVelhoSer Audiovisual Showcase at Museu da Pessoa, a Brazilian museum of life stories. Each participant picks one life story from the museum\'s archive and creates a new audiovisual reading of it. This short was edited from the interview with Olympia Gomes de Soutello.'
+    },
+    stills: [
+      'assets/pelas-chagas-still-1.jpg',
+      'assets/pelas-chagas-still-2.jpg'
     ]
   }
 };
@@ -2255,18 +2321,25 @@ const OBRAS = {
       var thumb = obra.videoCapa || (obra.stills && obra.stills[0]) || obra.fundo || '';
       elTrail.style.display = '';
       elFrame.className = 'frame';
+      /* trailerTipo 'arquivo': o vídeo é um arquivo do próprio site (sem
+         YouTube) e toca no mesmo pop-up do showreel */
+      var local = obra.trailerTipo === 'arquivo';
+      var rotulo = local ? t.watchHere : t.watch;
+      var dados = local
+        ? 'data-arquivo="' + esc(obra.trailer) + '" '
+        : 'data-embed="' + esc(embed) + '" data-watch="' + esc(watch) + '" ';
       elFrame.innerHTML =
-        '<button type="button" class="frame-link" data-embed="' + esc(embed) + '" ' +
-        'data-watch="' + esc(watch) + '" data-titulo="' + esc(obra.titulo) + '" ' +
+        '<button type="button" class="frame-link" ' + dados +
+        'data-titulo="' + esc(obra.titulo) + '" ' +
         'data-capa="' + esc(thumb) + '" ' +
-        'aria-label="' + esc(t.watch) + ' — ' + esc(obra.titulo) + '">' +
+        'aria-label="' + esc(rotulo) + ' — ' + esc(obra.titulo) + '">' +
           (thumb ? '<img class="frame-thumb" src="' + thumb + '" alt="" ' +
                    'onerror="this.remove()">' : '') +
           '<span class="rotulo">' +
             '<span class="frame-play" aria-hidden="true">' +
               '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>' +
             '</span>' +
-            '<span class="frame-label">' + esc(t.watch) + '</span>' +
+            '<span class="frame-label">' + esc(rotulo) + '</span>' +
           '</span>' +
         '</button>';
     } else {
