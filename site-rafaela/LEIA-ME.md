@@ -46,7 +46,7 @@ depois. A rota é `#/obra/<a-chave-do-objeto>`, e é o que vai no `href` do card
 | `en` | sobrescreve os campos acima na versão em inglês |
 
 **Obra em pós-produção:** deixe `fundo: ''`. Entra sozinho o gif de estrada
-noturna (`assets/em-pos.gif`) em preto e branco e desfocado. Quando o filme ficar
+noturna (`assets/em-pos.webp`, webp animado: mesmo visual do gif antigo com 1/6 do peso) em preto e branco e desfocado. Quando o filme ficar
 pronto, aponte o `fundo` pra um still e o gif sai de cena.
 
 ### Idiomas

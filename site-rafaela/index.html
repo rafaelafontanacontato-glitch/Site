@@ -630,6 +630,8 @@
   #trabalhos .grid .card:nth-child(1) .thumb{ aspect-ratio: 16/9.4; }
   #trabalhos .grid .card:nth-child(2) .thumb{ aspect-ratio: 16/10; }
   #trabalhos .grid .card:nth-child(3) .thumb{ aspect-ratio: 4/3; }
+  #trabalhos .grid .card:nth-child(4) .thumb{ aspect-ratio: 16/9; }
+  #trabalhos .grid .card:nth-child(5) .thumb{ aspect-ratio: 4/3; }
 
   /* ---- stack everything on narrow screens ---- */
   @media (max-width: 780px){
@@ -859,7 +861,9 @@
   .work-head{ max-width: 760px; margin: 0 auto; text-align: left; }
   .work-head h1{
     font-family:'Antonio', sans-serif; font-weight:600; text-transform:uppercase;
-    font-size: clamp(40px,6.4vw,92px); line-height:.95; letter-spacing:.005em;
+    /* 1.22 e não .95: em título de várias linhas, a vírgula e o Ç da linha de
+       cima encostavam nas letras da linha de baixo */
+    font-size: clamp(40px,6.4vw,92px); line-height:1.22; letter-spacing:.005em;
     text-wrap: balance;
     margin-bottom: clamp(20px,2.6vw,34px);
   }
@@ -894,6 +898,8 @@
   .work-selo img{ width:34px; height:34px; flex-shrink:0; }
   .work-selo.alto img{ width:auto; height:132px; }
   .work-selo.logo img{ width:83px; height:auto; }
+  /* logos horizontais (texto largo), como o do Filmsupply Editfest */
+  .work-selo.largo img{ width:124px; height:auto; }
 
   .work-link{
     display:inline-block;
@@ -1098,6 +1104,20 @@
         <span class="l2" data-i18n="fmtVideo">Videoclipe</span>
       </div>
     </a>
+    <a class="card" href="#/obra/what-instinct-cant-reach">
+      <div class="thumb" data-preview="assets/hover-editfest.mp4" data-preview-webm="assets/hover-editfest.webm"><img class="lazy fade-in" loading="lazy" decoding="async" src="assets/editfest-capa.jpg" alt="What Instinct Can't Reach" /></div>
+      <div class="cap">
+        <span class="l1">What Instinct Can't Reach</span>
+        <span class="l2" data-i18n="fmtAd">Publicidade</span>
+      </div>
+    </a>
+    <a class="card" href="#/obra/pelas-chagas-de-cristo">
+      <div class="thumb" data-preview="assets/hover-pelas-chagas.mp4" data-preview-webm="assets/hover-pelas-chagas.webm"><img class="lazy fade-in" loading="lazy" decoding="async" src="assets/pelas-chagas-capa.jpg" alt="Pelas chagas de Cristo, faça que eu encontre o que perdi" /></div>
+      <div class="cap">
+        <span class="l1">Pelas chagas de Cristo, faça que eu encontre o que perdi</span>
+        <span class="l2" data-i18n="fmtDoc">Curta documental</span>
+      </div>
+    </a>
   </div>
 </section>
 
@@ -1154,6 +1174,7 @@
   const siteNav = document.getElementById('site-nav');
   const siteHeader = document.getElementById('site-header');
 
+  const NAME_END = 0.8; // fração da rolagem em que o nome termina de encolher
   const TRANSITION = 780; // px of scroll to complete the animation (slower, smoother)
 
   var MOBILE_BP = 780;   // TEM que ser o mesmo do @media do CSS
@@ -1255,6 +1276,10 @@
     brandName.style.transform = prevNameTransform;
 
     brandSub.style.marginLeft = isMobileView() ? '' : (nameSmallWidth + NAME_SUB_GAP) + 'px';
+    // posição final (de repouso) do subtítulo, já com o recuo aplicado; usada pra
+    // ele nunca ficar embaixo do nome enquanto o nome ainda está grande
+    const subRest = brandSub.getBoundingClientRect();
+    subRestBox = { top: subRest.top, left: subRest.left, right: subRest.right };
     brandSub.style.transform = prevSubTransform;
 
     // Align #site-nav's right end (the "PT") with the right edge of the big centered
@@ -1268,6 +1293,30 @@
     const navDefaultRight = window.innerWidth - headerPadPx();
     const navInset = Math.max(navDefaultRight - titleRightEdge, 0);
     siteNav.style.marginRight = navInset.toFixed(1) + 'px';
+
+    const prevNavTransform = siteNav.style.transform;
+    siteNav.style.transform = 'none';
+    const navRest = siteNav.getBoundingClientRect();
+    navRestBox = { top: navRest.top, left: navRest.left, right: navRest.right };
+    siteNav.style.transform = prevNavTransform;
+  }
+
+  /* Garante que o subtítulo e o menu nunca fiquem embaixo do nome enquanto ele
+     encolhe: se o nome ainda ocupa a faixa horizontal deles, eles esperam logo
+     abaixo da base do nome; quando o nome já passou (ficou pequeno o bastante),
+     eles sobem pra linha do cabeçalho. A transição é contínua, sem pulo. */
+  let subRestBox = null, navRestBox = null;
+  const CLEAR_GAP = 16;   // px entre a base do nome e o topo do subtítulo/menu
+  const SIDE_GAP = 4;     // folga lateral considerada como "encostando"
+  const SIDE_RAMP = 18;   // px de afastamento lateral pra liberar a subida
+  function clearOffset(base, rest, nameRect){
+    if (!rest) return base;
+    // quanto o nome invade a faixa horizontal do elemento (1 = invade, 0 = livre)
+    const invadeDireita = (nameRect.right - (rest.left - SIDE_GAP - SIDE_RAMP)) / SIDE_RAMP;
+    const invadeEsquerda = ((rest.right + SIDE_GAP + SIDE_RAMP) - nameRect.left) / SIDE_RAMP;
+    const ov = Math.min(Math.max(Math.min(invadeDireita, invadeEsquerda), 0), 1);
+    const need = nameRect.bottom + CLEAR_GAP - rest.top;
+    return Math.max(base, need * ov);
   }
 
   function updateHeaderAnimation(){
@@ -1292,9 +1341,13 @@
       ? 1
       : Math.min(Math.max(y / TRANSITION, 0), 1);
     const p = easeInOutCubic(pLinear);
+    // o nome termina de encolher um pouco antes (aos 80% da rolagem); o subtítulo
+    // e o menu usam o resto pra subir e encaixar do lado dele. Assim os dois
+    // terminam juntos, no mesmo ponto de antes, e o frame final é idêntico.
+    const pName = easeInOutCubic(Math.min(pLinear / NAME_END, 1));
 
     // --- #brand-name: centered + big -> docked at the header's left padding, small ---
-    const fontSize = lerp(heroFontPx(), NAV_FONT_PX, p);
+    const fontSize = lerp(heroFontPx(), NAV_FONT_PX, pName);
     brandName.style.fontSize = fontSize.toFixed(1) + 'px';
     brandName.style.transform = 'none';
     const w = brandName.offsetWidth; // measured AFTER font-size is applied
@@ -1302,8 +1355,8 @@
     const finalNameLeft = headerPadPx();
     // land optically level with #brand-sub: match ink centres, not box centres
     const finalNameTop = subRestCenterY - nameInkOffset;
-    const nameTop = lerp(heroTopPx(), finalNameTop, p);
-    const nameLeft = lerp(centeredLeft, finalNameLeft, p);
+    const nameTop = lerp(heroTopPx(), finalNameTop, pName);
+    const nameLeft = lerp(centeredLeft, finalNameLeft, pName);
     brandName.style.top = nameTop.toFixed(1) + 'px';
     brandName.style.left = nameLeft.toFixed(1) + 'px';
 
@@ -1312,8 +1365,11 @@
 
     // --- #brand-sub and #site-nav: both rise up from below the name into the header row ---
     const subOffset = lerp(subRiseOffsetPx(), 0, p);
-    brandSub.style.transform = 'translateY(' + subOffset.toFixed(1) + 'px)';
-    siteNav.style.transform = 'translateY(' + subOffset.toFixed(1) + 'px)';
+    const nameRect = { left: nameLeft, right: nameLeft + w, bottom: nameTop + brandName.offsetHeight };
+    const subY = clearOffset(subOffset, subRestBox, nameRect);
+    const navY = clearOffset(subOffset, navRestBox, nameRect);
+    brandSub.style.transform = 'translateY(' + subY.toFixed(1) + 'px)';
+    siteNav.style.transform = 'translateY(' + navY.toFixed(1) + 'px)';
 
     // --- header bar: fades in as the navbar assembles ---
     const bgAlpha = p * p;
@@ -1359,6 +1415,7 @@
       lastFocus = document.activeElement;
       modal.classList.remove('embed');
       embedBox.innerHTML = '';
+      if (window.carregarShowreelCompleto) window.carregarShowreelCompleto();
       abrirModal();
       video.currentTime = 0;
       var pr = video.play();
@@ -1395,9 +1452,30 @@
       abrirModal();
     }
 
+    /* obra com vídeo hospedado no próprio site: usa o mesmo <video> do
+       showreel. Marca o player pra que o showreel recarregue o arquivo dele
+       na próxima vez que alguém apertar o play lá em cima. */
+    function openArquivo(btn){
+      lastFocus = document.activeElement;
+      modal.classList.remove('embed');
+      embedBox.innerHTML = '';
+      var src = btn.getAttribute('data-arquivo');
+      if (video.getAttribute('data-carregado') !== 'arquivo:' + src){
+        video.innerHTML = '<source src="' + src + '" type="video/mp4">';
+        video.load();
+        video.setAttribute('data-carregado', 'arquivo:' + src);
+      }
+      abrirModal();
+      video.currentTime = 0;
+      var pr = video.play();
+      if (pr && pr.catch) pr.catch(function(){});
+    }
+
     document.addEventListener('click', function(e){
       var btn = e.target.closest && e.target.closest('.frame-link[data-embed]');
-      if (btn){ e.preventDefault(); openEmbed(btn); }
+      if (btn){ e.preventDefault(); openEmbed(btn); return; }
+      var arq = e.target.closest && e.target.closest('.frame-link[data-arquivo]');
+      if (arq){ e.preventDefault(); openArquivo(arq); }
     });
 
     function closeReel(){
@@ -1554,6 +1632,41 @@
   function b64ToUint16(b64){ return new Uint16Array(b64ToBytes(b64).buffer); }
   function b64ToUint32(b64){ return new Uint32Array(b64ToBytes(b64).buffer); }
 
+  /* scissors.js formato 2: tudo num bloco só de inteiros de 16 bits, grupo
+     atrás de grupo. Em cada grupo vêm x, y, z das posições, depois x, y, z das
+     normais, depois os índices, sempre como diferença do valor anterior
+     (zigzag), dobrada pra caber em 16 bits. Aqui a gente desfaz isso e devolve os mesmos Float32 de antes. */
+  function lerTesoura(M){
+    if (M.formato !== 2){
+      return M.groups.map(function(g){
+        return {
+          g: g,
+          positions: b64ToFloat32(g.positions_b64),
+          normals: b64ToFloat32(g.normals_b64),
+          indices: g.indexType === 'Uint16' ? b64ToUint16(g.indices_b64) : b64ToUint32(g.indices_b64)
+        };
+      });
+    }
+    const raw = b64ToUint16(M.dados);
+    let o = 0;
+    function unzz(u){ return (u >>> 1) ^ -(u & 1); }
+    return M.groups.map(function(g){
+      const V = g.v, positions = new Float32Array(V * 3), normals = new Float32Array(V * 3);
+      for (let a = 0; a < 3; a++){
+        let q = 0; const h = M.escala[a] / 32767, c = M.bboxCenter[a];
+        for (let i = 0; i < V; i++){ q = (q + unzz(raw[o++])) << 16 >> 16; positions[i * 3 + a] = q * h + c; }
+      }
+      for (let a = 0; a < 3; a++){
+        let q = 0;
+        for (let i = 0; i < V; i++){ q = (q + unzz(raw[o++])) << 16 >> 16; normals[i * 3 + a] = q / 32767; }
+      }
+      const indices = new Uint16Array(g.i);
+      let q = 0;
+      for (let i = 0; i < g.i; i++){ q = (q + unzz(raw[o++])) & 0xffff; indices[i] = q; }
+      return { g: g, positions: positions, normals: normals, indices: indices };
+    });
+  }
+
   const canvas = document.getElementById('gl');
   const heroEl = document.getElementById('hero');
 
@@ -1683,10 +1796,11 @@
       bboxSize[0]*bboxSize[0] + bboxSize[1]*bboxSize[1] + bboxSize[2]*bboxSize[2]
     );
 
-    MANIFEST.groups.forEach(function(g){
-      const positions = b64ToFloat32(g.positions_b64);
-      const normals = b64ToFloat32(g.normals_b64);
-      const indices = g.indexType === 'Uint16' ? b64ToUint16(g.indices_b64) : b64ToUint32(g.indices_b64);
+    lerTesoura(MANIFEST).forEach(function(parte){
+      const g = parte.g;
+      const positions = parte.positions;
+      const normals = parte.normals;
+      const indices = parte.indices;
 
       const geometry = new THREE.BufferGeometry();
       geometry.setAttribute('position', new THREE.BufferAttribute(positions,3));
@@ -1809,24 +1923,24 @@ const TRAD = {
     brandSub: 'Montadora e<br>Assistente de Montagem',
     navWorks: 'Trabalhos', navContact: 'Contato',
     worksTitle: 'Trabalhos', bioTitle: 'Bio',
-    fmtFeature: 'Longa-metragem', fmtVideo: 'Videoclipe',
+    fmtFeature: 'Longa-metragem', fmtVideo: 'Videoclipe', fmtAd: 'Publicidade', fmtDoc: 'Curta documental',
     footerRole: 'Montadora e Assistente de Montagem',
     backWorks: 'Trabalhos',
     bioText: 'Rafaela Fontana é formada em Design Gráfico e vem construindo sua trajetória na montagem cinematográfica. Estreou como montadora de longa-metragem em Irmãs de Sangue, um trabalho de ficção que se tornou a base de sua formação prática e profissional. Rafaela acredita que a montagem é uma ferramenta ativa, capaz de resolver problemas na própria matéria-prima do filme, e que esse tipo de trabalho só atinge todo seu potencial quando nasce de uma colaboração próxima e verdadeira com o diretor.',
     synopsis: 'Sinopse', aboutProject: 'Sobre o projeto', festivals: 'Festivais',
-    fullCredits: 'Ficha técnica completa', watch: 'Assistir no YouTube ↗', trailer: 'Trailer',
+    fullCredits: 'Ficha técnica completa', watch: 'Assistir no YouTube ↗', watchHere: 'Assistir', trailer: 'Trailer',
     reelLabel: 'Assistir showreel', watchReel: 'Assistir showreel'
   },
   en: {
     brandSub: 'Film Editor &<br>Assistant Editor',
     navWorks: 'Works', navContact: 'Contact',
     worksTitle: 'Works', bioTitle: 'Bio',
-    fmtFeature: 'Feature film', fmtVideo: 'Music video',
+    fmtFeature: 'Feature film', fmtVideo: 'Music video', fmtAd: 'Advertising', fmtDoc: 'Short documentary',
     footerRole: 'Film Editor and Assistant Editor',
     backWorks: 'Works',
     bioText: 'Rafaela Fontana holds a degree in Graphic Design and has been building her career in film editing. She made her feature-film debut as editor on Irmãs de Sangue, a fiction work that became the foundation of her practical and professional training. Rafaela believes editing is an active tool, able to solve problems in the film\'s own raw material, and that this kind of work only reaches its full potential when it grows out of a close, honest collaboration with the director.',
     synopsis: 'Synopsis', aboutProject: 'About the project', festivals: 'Festivals',
-    fullCredits: 'Full credits', watch: 'Watch on YouTube ↗', trailer: 'Trailer',
+    fullCredits: 'Full credits', watch: 'Watch on YouTube ↗', watchHere: 'Watch', trailer: 'Trailer',
     reelLabel: 'Watch showreel', watchReel: 'Watch showreel'
   }
 };
@@ -1842,7 +1956,7 @@ var lang = 'pt';
 
    fundo: o still que vira o fundo desfocado da página. Se a obra ainda está em
    pós, deixe o campo vazio: entra sozinho o gif de estrada noturna
-   (assets/em-pos.gif), em preto e branco e desfocado.                                          */
+   (assets/em-pos.webp), em preto e branco e desfocado.                                          */
 const OBRAS = {
   'irmas-de-sangue': {
     titulo: 'Irmãs de Sangue',
@@ -2031,6 +2145,75 @@ const OBRAS = {
         'Storyboard — Rafaela Fontana'
       ]]
     ]
+  },
+  'what-instinct-cant-reach': {
+    titulo: "What Instinct Can't Reach",
+    ficha: 'Publicidade / Filmsupply Editfest / 2026',
+    creditos: [
+      ['Roteiro e montagem', 'Rafaela Fontana'],
+      ['Narração', 'Ken Kowalik'],
+      ['Imagens', 'Acervo Filmsupply'],
+      ['Música', 'Musicbed']
+    ],
+    sinopse: 'Às vezes a cicatriz coça, os bichos ficam inquietos e o cheiro deduz que logo vem a tempestade. Um comercial sobre instinto e proteção que não espera a dor aparecer.',
+    projeto: 'Criado para o Filmsupply Editfest 2026, competição de montagem da Filmsupply. Cada participante tem acesso ao acervo de imagens da Filmsupply e às músicas da Musicbed, e precisa construir uma peça inteira só com esse material, do roteiro ao corte final. Na categoria Advertisement, o desafio é criar um comercial completo para uma marca fictícia. What Instinct Can\'t Reach ficou entre os cinco finalistas da categoria.',
+    festivais: [],
+    selo: { icone: 'assets/filmsupply-editfest.png', largo: true, texto: 'Finalista da categoria Advertisement do Filmsupply Editfest 2026' },
+    fundo: 'assets/editfest-fundo.jpg',
+    // em português toca a versão com legenda em PT (arquivo do site);
+    // em inglês, o vídeo oficial da competição no YouTube
+    trailer: 'assets/editfest-pt.mp4', trailerTipo: 'arquivo', videoTitulo: '',
+    videoCapa: 'assets/editfest-capa.jpg',
+    en: {
+      trailer: 'I8JiPjSzu9I', trailerTipo: 'youtube',
+      ficha: 'Advertising / Filmsupply Editfest / 2026',
+      creditos: [
+        ['Screenplay and editing', 'Rafaela Fontana'],
+        ['Narration', 'Ken Kowalik'],
+        ['Footage', 'Filmsupply library'],
+        ['Music', 'Musicbed']
+      ],
+      sinopse: "Sometimes the scar itches, the animals grow restless and the smell tells you a storm is coming. An ad about instinct, and about protection that doesn't wait for the ache.",
+      projeto: "Created for Filmsupply Editfest 2026, Filmsupply's editing competition. Each entrant gets access to the Filmsupply footage library and Musicbed's music, and has to build a complete piece from that material alone, from script to final cut. In the Advertisement category, the brief is to create a full commercial for a fictional brand. What Instinct Can't Reach was one of the five finalists in the category.",
+      selo: { icone: 'assets/filmsupply-editfest.png', largo: true, texto: 'Finalist in the Advertisement category at Filmsupply Editfest 2026' }
+    },
+    stills: [
+      'assets/editfest-still-1.jpg',
+      'assets/editfest-still-2.jpg',
+      'assets/editfest-still-3.jpg'
+    ]
+  },
+  'pelas-chagas-de-cristo': {
+    titulo: 'Pelas chagas de Cristo, faça que eu encontre o que perdi',
+    ficha: 'Curta documental / Museu da Pessoa / 2026 / Brasil',
+    creditos: [
+      ['Entrevistada', 'Olympia Gomes de Soutello'],
+      ['Imagens', 'Acervo Museu da Pessoa'],
+      ['Montagem', 'Rafaela Fontana']
+    ],
+    sinopse: 'Olympia Gomes de Soutello abre a conversa com a oração que faz pra encontrar o que perdeu. A pensão de freiras portuguesas, os camarões pescados nas poças da maré, a freira que deu o casaco novo pra Nossa Senhora e a chegada a São Paulo, onde ela andava de bonde sozinha. Ela e Deus.',
+    selo: { icone: 'assets/museu-da-pessoa.png', largo: true, texto: 'Selecionado para a 6ª Mostra Audiovisual EmVelhoSer, do Museu da Pessoa' },
+    projeto: 'Feito para a 6ª Mostra Audiovisual EmVelhoSer, do Museu da Pessoa. Cada participante escolhe uma das histórias de vida do acervo do museu e cria uma nova leitura audiovisual a partir dela. Este curta foi montado a partir da entrevista de Olympia Gomes de Soutello.',
+    projetoLink: { url: 'https://museudapessoa.org/', label: 'museudapessoa.org' },
+    festivais: [],
+    fundo: 'assets/pelas-chagas-fundo.jpg',
+    trailer: 'assets/pelas-chagas-de-cristo.mp4', trailerTipo: 'arquivo', videoTitulo: '',
+    videoCapa: 'assets/pelas-chagas-capa.jpg',
+    en: {
+      ficha: 'Short documentary / Museu da Pessoa / 2026 / Brazil',
+      creditos: [
+        ['Interviewee', 'Olympia Gomes de Soutello'],
+        ['Footage', 'Museu da Pessoa archive'],
+        ['Editing', 'Rafaela Fontana']
+      ],
+      sinopse: 'Olympia Gomes de Soutello opens the conversation with the prayer she says to find what she has lost. The boarding house run by Portuguese nuns, the shrimp caught in tide pools, the nun who gave her new coat to Our Lady, and her arrival in São Paulo, where she rode the tram alone. Just her and God.',
+      selo: { icone: 'assets/museu-da-pessoa.png', largo: true, texto: 'Selected for the 6th EmVelhoSer Audiovisual Showcase at Museu da Pessoa' },
+      projeto: 'Made for the 6th EmVelhoSer Audiovisual Showcase at Museu da Pessoa, a Brazilian museum of life stories. Each participant picks one life story from the museum\'s archive and creates a new audiovisual reading of it. This short was edited from the interview with Olympia Gomes de Soutello.'
+    },
+    stills: [
+      'assets/pelas-chagas-still-1.jpg',
+      'assets/pelas-chagas-still-2.jpg'
+    ]
   }
 };
 
@@ -2043,7 +2226,7 @@ const OBRAS = {
   var elFrame = document.getElementById('work-trailer-frame');
   var elStill = document.getElementById('work-stills');
   var elBg    = document.getElementById('work-bg');
-  var ESTATICA = 'assets/em-pos.gif';
+  var ESTATICA = 'assets/em-pos.webp';
   if (!page) return;
 
   function esc(s){
@@ -2104,7 +2287,7 @@ const OBRAS = {
     }
     if (obra.selo){
       [].concat(obra.selo).forEach(function(selo){
-        html += '<div class="block work-selo' + (selo.alto ? ' alto' : '') + (selo.logo ? ' logo' : '') + '">' +
+        html += '<div class="block work-selo' + (selo.alto ? ' alto' : '') + (selo.logo ? ' logo' : '') + (selo.largo ? ' largo' : '') + '">' +
                 (selo.icone ? '<img src="' + esc(selo.icone) + '" alt="">' : '') +
                 '<span>' + esc(selo.texto) + '</span></div>';
       });
@@ -2144,18 +2327,25 @@ const OBRAS = {
       var thumb = obra.videoCapa || (obra.stills && obra.stills[0]) || obra.fundo || '';
       elTrail.style.display = '';
       elFrame.className = 'frame';
+      /* trailerTipo 'arquivo': o vídeo é um arquivo do próprio site (sem
+         YouTube) e toca no mesmo pop-up do showreel */
+      var local = obra.trailerTipo === 'arquivo';
+      var rotulo = local ? t.watchHere : t.watch;
+      var dados = local
+        ? 'data-arquivo="' + esc(obra.trailer) + '" '
+        : 'data-embed="' + esc(embed) + '" data-watch="' + esc(watch) + '" ';
       elFrame.innerHTML =
-        '<button type="button" class="frame-link" data-embed="' + esc(embed) + '" ' +
-        'data-watch="' + esc(watch) + '" data-titulo="' + esc(obra.titulo) + '" ' +
+        '<button type="button" class="frame-link" ' + dados +
+        'data-titulo="' + esc(obra.titulo) + '" ' +
         'data-capa="' + esc(thumb) + '" ' +
-        'aria-label="' + esc(t.watch) + ' — ' + esc(obra.titulo) + '">' +
+        'aria-label="' + esc(rotulo) + ' — ' + esc(obra.titulo) + '">' +
           (thumb ? '<img class="frame-thumb" src="' + thumb + '" alt="" ' +
                    'onerror="this.remove()">' : '') +
           '<span class="rotulo">' +
             '<span class="frame-play" aria-hidden="true">' +
               '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>' +
             '</span>' +
-            '<span class="frame-label">' + esc(t.watch) + '</span>' +
+            '<span class="frame-label">' + esc(rotulo) + '</span>' +
           '</span>' +
         '</button>';
     } else {
@@ -2300,15 +2490,16 @@ const OBRAS = {
   });
 
   /* troca as fontes de um <video> e recarrega. O showreel tem quatro arquivos:
-     o trecho de 14s que roda de fundo (com webm de reserva) e o showreel
+     o trecho de 14s que roda de fundo (webm primeiro, que é menos da metade do
+     peso; o mp4 fica de reserva pra navegador que não toca webm) e o showreel
      completo que abre no play — cada um em português e em inglês. */
   var SHOWREEL = {
     pt: {
-      loop: ['assets/showreel-loop-pt.mp4', 'assets/showreel-loop-pt.webm'],
+      loop: ['assets/showreel-loop-pt.webm', 'assets/showreel-loop-pt.mp4'],
       full: ['assets/showreel-pt.mp4']
     },
     en: {
-      loop: ['assets/showreel-loop-en.mp4', 'assets/showreel-loop-en.webm'],
+      loop: ['assets/showreel-loop-en.webm', 'assets/showreel-loop-en.mp4'],
       full: ['assets/showreel-en.mp4']
     }
   };
@@ -2322,11 +2513,22 @@ const OBRAS = {
     if (tocando) { var pr = el.play(); if (pr && pr.catch) pr.catch(function(){}); }
   }
 
+  window.carregarShowreelCompleto = function(){
+    var el = document.getElementById('reel-video');
+    if (!el || el.getAttribute('data-carregado') === lang) return;
+    setVideo(el, (SHOWREEL[lang] || SHOWREEL.pt).full);
+    el.setAttribute('data-carregado', lang);
+  };
+
   function aplicarIdioma(){
     var t = TRAD[lang];
     var sr = SHOWREEL[lang] || SHOWREEL.pt;
     setVideo(document.getElementById('reel-bg'), sr.loop);
-    setVideo(document.getElementById('reel-video'), sr.full);
+    // o showreel completo (16 MB) só recebe o arquivo quando a pessoa aperta o
+    // play: sem isso o navegador começava a baixar ele em toda visita. Se o
+    // pop-up já estiver aberto na troca de idioma, troca na hora.
+    var reelVid = document.getElementById('reel-video');
+    if (reelVid && reelVid.getAttribute('data-carregado')){ setVideo(reelVid, sr.full); reelVid.setAttribute('data-carregado', lang); }
     document.documentElement.lang = (lang === 'en' ? 'en' : 'pt-BR');
     Array.prototype.forEach.call(document.querySelectorAll('[data-i18n]'), function(el){
       var v = t[el.getAttribute('data-i18n')];
@@ -2359,8 +2561,9 @@ const OBRAS = {
       vid.muted = true; vid.loop = true; vid.playsInline = true;
       vid.setAttribute('muted',''); vid.setAttribute('playsinline','');
       vid.preload = 'auto';
-      vid.innerHTML = '<source src="' + mp4 + '" type="video/mp4">' +
-                      (webm ? '<source src="' + webm + '" type="video/webm">' : '');
+      // webm primeiro: é bem mais leve, e quem não toca webm cai no mp4
+      vid.innerHTML = (webm ? '<source src="' + webm + '" type="video/webm">' : '') +
+                      '<source src="' + mp4 + '" type="video/mp4">';
       vid.addEventListener('canplay', function(){ vid.classList.add('pronto'); });
       thumb.appendChild(vid);
     }

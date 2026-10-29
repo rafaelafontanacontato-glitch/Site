@@ -9,7 +9,11 @@ const isCoarsePointer = window.matchMedia("(pointer: coarse)").matches;
 export function startHero() {
   const canvas = document.querySelector("#computer-canvas");
   const stage = canvas?.closest(".computer-stage");
-  if (!canvas || !stage || !window.WebGLRenderingContext) return;
+  if (!canvas || !stage) return;
+  if (!window.WebGLRenderingContext) {
+    stage.classList.add("model-failed");
+    return;
+  }
 
   let renderer;
   try {
@@ -20,6 +24,7 @@ export function startHero() {
       powerPreference: "low-power",
     });
   } catch {
+    stage.classList.add("model-failed");
     return;
   }
 
