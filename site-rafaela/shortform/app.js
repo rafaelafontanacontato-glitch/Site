@@ -1,4 +1,4 @@
-import { portfolio, categories } from "./portfolio.js?v=10";
+import { portfolio, categories } from "./portfolio.js?v=11";
 
 const copy = {
   en: {
@@ -21,14 +21,14 @@ const copy = {
     heroCta: "Watch the verticals",
     marquee: ["Reels", "TikTok", "Shorts", "YouTube", "Captions", "Motion", "B-roll", "Pacing"],
     verticalEyebrow: "9:16 · Vertical",
-    verticalTitle: "Made for<br>the feed.",
+    verticalTitle: "Made for <em>the feed.</em>",
     verticalNote: "Click any clip to watch it with sound.",
     all: "All",
     wideEyebrow: "16:9 · Wide",
-    wideTitle: "Brand films,<br>YouTube &amp; VJ.",
+    wideTitle: "Brand films, <em>YouTube &amp; VJ.</em>",
     wideNote: "The horizontal side of the work.",
     aboutEyebrow: "About",
-    aboutTitle: "Editing with an ear for pace.",
+    aboutTitle: "Editing with an <em>ear for pace.</em>",
     aboutCopy:
       "I’m Rafaela, a video editor working across Reels, TikTok, Shorts and YouTube. I come from film editing, so every cut starts with rhythm: what to show, how long to hold it and when to let it go.",
     service1: "Reels, TikTok &amp; Shorts",
@@ -37,7 +37,7 @@ const copy = {
     service4: "Pacing &amp; storytelling",
     cinemaLink: "See my film work ↗",
     contactEyebrow: "Available for new projects",
-    contactTitle: "Got footage?<br>Let’s cut it.",
+    contactTitle: "Got footage? <em>Let’s cut it.</em>",
     watchYoutube: "Watch on YouTube ↗",
     playLabel: "Play {title}",
   },
@@ -61,14 +61,14 @@ const copy = {
     heroCta: "Ver os verticais",
     marquee: ["Reels", "TikTok", "Shorts", "YouTube", "Legendas", "Motion", "B-roll", "Ritmo"],
     verticalEyebrow: "9:16 · Vertical",
-    verticalTitle: "Feito pro<br>feed.",
+    verticalTitle: "Feito pro <em>feed.</em>",
     verticalNote: "Clica em qualquer vídeo pra assistir com som.",
     all: "Todos",
     wideEyebrow: "16:9 · Horizontal",
-    wideTitle: "Marca,<br>YouTube &amp; VJ.",
+    wideTitle: "Marca, <em>YouTube &amp; VJ.</em>",
     wideNote: "O lado horizontal do trabalho.",
     aboutEyebrow: "Sobre",
-    aboutTitle: "Edição com ouvido pro ritmo.",
+    aboutTitle: "Edição com <em>ouvido pro ritmo.</em>",
     aboutCopy:
       "Sou a Rafaela, editora de vídeo pra Reels, TikTok, Shorts e YouTube. Venho da montagem de cinema, então todo corte começa pelo ritmo: o que mostrar, quanto tempo segurar e a hora de soltar.",
     service1: "Reels, TikTok &amp; Shorts",
@@ -77,7 +77,7 @@ const copy = {
     service4: "Ritmo &amp; narrativa",
     cinemaLink: "Ver meu trabalho em cinema ↗",
     contactEyebrow: "Disponível para novos projetos",
-    contactTitle: "Tem material?<br>Bora cortar.",
+    contactTitle: "Tem material? <em>Bora cortar.</em>",
     watchYoutube: "Assistir no YouTube ↗",
     playLabel: "Assistir {title}",
   },
@@ -153,7 +153,7 @@ function playPreview(card) {
     video.preload = "auto";
     video.src = card.dataset.preview;
     video.addEventListener("playing", () => card.classList.add("is-playing"));
-    (card.querySelector(".w-frame") || card).append(video);
+    (card.querySelector(".w-frame, .v-media") || card).append(video);
   }
   video.play().catch(() => {});
 }
@@ -176,14 +176,13 @@ function renderHero() {
       phone.type = "button";
       phone.className = "phone";
       phone.setAttribute("aria-label", t("playLabel").replace("{title}", localized(project.title)));
-      phone.innerHTML = `<img src="${esc(project.poster)}" alt="" decoding="async">
-        <span class="phone-tag"><span>${esc(categoryTitle(project))}</span><span>${time(project.duration)}</span></span>`;
+      phone.innerHTML = `<span class="phone-screen"><img src="${esc(project.poster)}" alt="" decoding="async"></span>
+        <span class="phone-tag">${esc(categoryTitle(project))}</span>`;
       const video = document.createElement("video");
       Object.assign(video, { muted: true, loop: true, playsInline: true, autoplay: canAutoplay(), preload: "auto" });
       video.setAttribute("aria-hidden", "true");
       video.src = project.preview;
-      video.style.cssText = "position:absolute;inset:0";
-      phone.append(video);
+      phone.querySelector(".phone-screen").append(video);
       if (canAutoplay()) video.play().catch(() => {});
       phone.addEventListener("click", () => openPlayer(verticals, verticals.indexOf(project), phone));
       wrap.append(phone);
@@ -242,9 +241,9 @@ function renderVerticals() {
     card.className = "v-card";
     card.setAttribute("aria-label", t("playLabel").replace("{title}", localized(project.title)));
     card.innerHTML = `
-      <img src="${esc(project.poster)}" alt="" loading="lazy" decoding="async">
-      <span class="v-top" aria-hidden="true"><span>${pad(index + 1)}</span><span class="v-dur"><i class="rec-dot"></i>${time(project.duration)}</span></span>
-      <span class="v-play" aria-hidden="true">▶</span>
+      <span class="v-media"><img src="${esc(project.poster)}" alt="" loading="lazy" decoding="async">
+        <span class="v-top" aria-hidden="true"><span>${pad(index + 1)}</span><span class="v-dur"><i class="dot"></i>${time(project.duration)}</span></span>
+        <span class="v-play" aria-hidden="true">▶</span></span>
       <span class="v-bottom" aria-hidden="true"><strong>${esc(localized(project.title))}</strong><span>${esc(categoryTitle(project))}</span></span>`;
     card.addEventListener("click", () => openPlayer(list, index, card));
     attachPreview(card, project);
