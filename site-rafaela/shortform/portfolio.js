@@ -1,5 +1,5 @@
-// Edit categories and projects here. Keep each project in its categoryId.
-// YouTube entries use youtubeId and optional startSeconds; direct files use video.
+// Edit categories and projects here. Vertical (9:16) items show in the big vertical grid,
+// everything else in the wide section. preview = short muted loop in assets/previews/.
 export const categories = [
   {
     id: "b-roll",
@@ -49,6 +49,8 @@ export const portfolio = [
   {
     id: "real-estate-luxury-lake-home-broll",
     video: "./assets/videos/real-estate-luxury-lake-home-broll.mp4",
+    preview: "./assets/previews/real-estate-luxury-lake-home-broll.mp4",
+    duration: 27,
     poster: "./assets/posters/real-estate-luxury-lake-home-broll.jpg",
     title: {
       en: "Luxury lake home",
@@ -69,6 +71,8 @@ export const portfolio = [
   {
     id: "talking-head-company-introduction",
     video: "./assets/videos/talking-head-company-introduction.mp4",
+    preview: "./assets/previews/talking-head-company-introduction.mp4",
+    duration: 60,
     poster: "./assets/posters/talking-head-company-introduction.jpg",
     title: {
       en: "Company introduction",
@@ -89,6 +93,8 @@ export const portfolio = [
   {
     id: "brand-dino-adventure-tv-commercial",
     video: "./assets/videos/brand-dino-adventure-tv-commercial.mp4",
+    preview: "./assets/previews/brand-dino-adventure-tv-commercial.mp4",
+    duration: 64,
     poster: "./assets/posters/brand-dino-adventure-tv-commercial.jpg",
     title: {
       en: "Dino Adventure",
@@ -109,6 +115,8 @@ export const portfolio = [
   {
     id: "b-roll-energetic-vibes",
     video: "./assets/videos/b-roll-energetic-vibes.mp4",
+    preview: "./assets/previews/b-roll-energetic-vibes.mp4",
+    duration: 24,
     poster: "./assets/posters/b-roll-energetic-vibes.jpg",
     title: {
       en: "Energetic B-roll",
@@ -129,6 +137,8 @@ export const portfolio = [
   {
     id: "real-estate-luxury-home-broll",
     video: "./assets/videos/real-estate-luxury-home-broll.mp4",
+    preview: "./assets/previews/real-estate-luxury-home-broll.mp4",
+    duration: 33,
     poster: "./assets/posters/real-estate-luxury-home-broll.jpg",
     title: {
       en: "Luxury home",
@@ -149,6 +159,8 @@ export const portfolio = [
   {
     id: "b-roll-driven-motion",
     video: "./assets/videos/b-roll-driven-motion.mp4",
+    preview: "./assets/previews/b-roll-driven-motion.mp4",
+    duration: 27,
     poster: "./assets/posters/b-roll-driven-motion.jpg",
     title: {
       en: "B-roll & motion",
@@ -169,6 +181,8 @@ export const portfolio = [
   {
     id: "brand-bdl-alimentos-company-history",
     video: "./assets/videos/brand-bdl-alimentos-company-history.mp4",
+    preview: "./assets/previews/brand-bdl-alimentos-company-history.mp4",
+    duration: 248,
     poster: "./assets/posters/brand-bdl-alimentos-company-history.jpg",
     title: {
       en: "BDL Alimentos — Company history",
@@ -189,6 +203,8 @@ export const portfolio = [
   {
     id: "talking-head-customer-testimonial",
     video: "./assets/videos/talking-head-customer-testimonial.mp4",
+    preview: "./assets/previews/talking-head-customer-testimonial.mp4",
+    duration: 60,
     poster: "./assets/posters/talking-head-customer-testimonial.jpg",
     title: {
       en: "Customer testimonial",
@@ -209,6 +225,8 @@ export const portfolio = [
   {
     id: "b-roll-company-introduction",
     video: "./assets/videos/b-roll-company-introduction.mp4",
+    preview: "./assets/previews/b-roll-company-introduction.mp4",
+    duration: 34,
     poster: "./assets/posters/b-roll-company-introduction.jpg",
     title: {
       en: "Company introduction in B-roll",
@@ -229,6 +247,8 @@ export const portfolio = [
   {
     id: "real-estate-nature-house-host-led",
     video: "./assets/videos/real-estate-nature-house-host-led.mp4",
+    preview: "./assets/previews/real-estate-nature-house-host-led.mp4",
+    duration: 60,
     poster: "./assets/posters/real-estate-nature-house-host-led.jpg",
     title: {
       en: "Nature house — Guided tour",
@@ -249,6 +269,8 @@ export const portfolio = [
   {
     id: "brand-real-estate-agency-overview",
     video: "./assets/videos/brand-real-estate-agency-overview.mp4",
+    preview: "./assets/previews/brand-real-estate-agency-overview.mp4",
+    duration: 101,
     poster: "./assets/posters/brand-real-estate-agency-overview.jpg",
     title: {
       en: "Real estate agency overview",
@@ -269,6 +291,8 @@ export const portfolio = [
   {
     id: "b-roll-driven",
     video: "./assets/videos/b-roll-driven.mp4",
+    preview: "./assets/previews/b-roll-driven.mp4",
+    duration: 25,
     poster: "./assets/posters/b-roll-driven.jpg",
     title: {
       en: "B-roll edit",
@@ -289,6 +313,8 @@ export const portfolio = [
   {
     id: "real-estate-land-listing-host-led",
     video: "./assets/videos/real-estate-land-listing-host-led.mp4",
+    preview: "./assets/previews/real-estate-land-listing-host-led.mp4",
+    duration: 45,
     poster: "./assets/posters/real-estate-land-listing-host-led.jpg",
     title: {
       en: "Land listing — Guided tour",
@@ -309,6 +335,8 @@ export const portfolio = [
   {
     id: "b-roll-explanation",
     video: "./assets/videos/b-roll-explanation.mp4",
+    preview: "./assets/previews/b-roll-explanation.mp4",
+    duration: 28,
     poster: "./assets/posters/b-roll-explanation.jpg",
     title: {
       en: "Explainer in B-roll",
@@ -330,6 +358,8 @@ export const portfolio = [
     id: "vj-visualizer-fellet",
     categoryId: "vj",
     video: "./assets/videos/vj-visualizer-fellet.mp4",
+    preview: "./assets/previews/vj-visualizer-fellet.mp4",
+    duration: 8,
     poster: "./assets/posters/vj-visualizer-fellet.jpg",
     title: {
       en: "Visualizer Fellet",

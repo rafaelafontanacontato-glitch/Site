@@ -8,27 +8,30 @@ the same deploy.
 
 ## Preview locally
 
-The page uses ES modules and loads the 3D GLB model, so preview it over HTTP
-instead of opening `index.html` directly:
+The page uses ES modules, so preview it over HTTP instead of opening
+`index.html` directly:
 
 ```bash
 python3 -m http.server 4173 --directory site-rafaela
 ```
 
 Then open <http://127.0.0.1:4173/shortform/>. Stop the server with `Ctrl-C`.
-There is no package manager, build step, or local dependency install. Three.js
-and `GLTFLoader` are vendored in `vendor/` so the page can be deployed as
-static files.
+There is no package manager, build step, or dependency. Visual decisions
+(colors, type, components) are written down in `DESIGN.md`.
 
 ## Editing content
 
 - `index.html` contains the page structure, metadata, and accessible labels.
 - `styles.css` contains the visual system and responsive layout.
-- `app.js` owns language switching, the format accordions, and the accessible playback dialog.
+- `app.js` owns language switching, the hero phones, the vertical grid with
+  filters, the wide grid, and the player dialog (prev/next, arrows, swipe, Esc).
 - `portfolio.js` is the content manifest for the selected videos. Add a
   project there with English and Portuguese fields, a poster, and a video URL.
-- `hero.js` controls the interactive computer model. The optimized model is
-  `assets/computer-web.glb`; `CREDITS.md` records its source and licenses.
+- Items with height > width go to the vertical (9:16) grid, the rest to the
+  wide (16:9) section. `HERO_IDS` in `app.js` picks the three hero phones.
+- `assets/previews/` holds 5-second muted loops (360px wide for verticals,
+  640px for wide) that play while a card is on screen. Make one for a new clip:
+  `ffmpeg -ss 5 -t 5 -i clip.mp4 -an -vf scale=360:-2,fps=24 -c:v libx264 -crf 30 -pix_fmt yuv420p -movflags +faststart assets/previews/clip.mp4`
 
 The portrait and favicon intentionally reuse files from `../assets/`. Keep
 those relative paths intact when moving or previewing the page.
