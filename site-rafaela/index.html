@@ -632,6 +632,7 @@
   #trabalhos .grid .card:nth-child(3) .thumb{ aspect-ratio: 4/3; }
   #trabalhos .grid .card:nth-child(4) .thumb{ aspect-ratio: 16/9; }
   #trabalhos .grid .card:nth-child(5) .thumb{ aspect-ratio: 4/3; }
+  #trabalhos .grid .card:nth-child(6) .thumb{ aspect-ratio: 4/3; }
 
   /* ---- stack everything on narrow screens ---- */
   @media (max-width: 780px){
@@ -1116,6 +1117,13 @@
       <div class="cap">
         <span class="l1">Pelas chagas de Cristo, faça que eu encontre o que perdi</span>
         <span class="l2" data-i18n="fmtDoc">Curta documental</span>
+      </div>
+    </a>
+    <a class="card" href="#/obra/trajeto-rima">
+      <div class="thumb" data-preview="assets/hover-trajeto-rima.mp4" data-preview-webm="assets/hover-trajeto-rima.webm"><img class="lazy fade-in" loading="lazy" decoding="async" src="assets/trajeto-rima-capa.jpg" alt="Trajeto Rima" /></div>
+      <div class="cap">
+        <span class="l1">Trajeto Rima</span>
+        <span class="l2" data-i18n="fmtMiniDoc">Mini doc</span>
       </div>
     </a>
   </div>
@@ -1923,7 +1931,7 @@ const TRAD = {
     brandSub: 'Montadora e<br>Assistente de Montagem',
     navWorks: 'Trabalhos', navContact: 'Contato',
     worksTitle: 'Trabalhos', bioTitle: 'Bio',
-    fmtFeature: 'Longa-metragem', fmtVideo: 'Videoclipe', fmtAd: 'Publicidade', fmtDoc: 'Curta documental',
+    fmtFeature: 'Longa-metragem', fmtVideo: 'Videoclipe', fmtAd: 'Publicidade', fmtDoc: 'Curta documental', fmtMiniDoc: 'Mini doc',
     footerRole: 'Montadora e Assistente de Montagem',
     backWorks: 'Trabalhos',
     bioText: 'Rafaela Fontana é formada em Design Gráfico e vem construindo sua trajetória na montagem cinematográfica. Estreou como montadora de longa-metragem em Irmãs de Sangue, um trabalho de ficção que se tornou a base de sua formação prática e profissional. Rafaela acredita que a montagem é uma ferramenta ativa, capaz de resolver problemas na própria matéria-prima do filme, e que esse tipo de trabalho só atinge todo seu potencial quando nasce de uma colaboração próxima e verdadeira com o diretor.',
@@ -1935,7 +1943,7 @@ const TRAD = {
     brandSub: 'Film Editor &<br>Assistant Editor',
     navWorks: 'Works', navContact: 'Contact',
     worksTitle: 'Works', bioTitle: 'Bio',
-    fmtFeature: 'Feature film', fmtVideo: 'Music video', fmtAd: 'Advertising', fmtDoc: 'Short documentary',
+    fmtFeature: 'Feature film', fmtVideo: 'Music video', fmtAd: 'Advertising', fmtDoc: 'Short documentary', fmtMiniDoc: 'Short documentary',
     footerRole: 'Film Editor and Assistant Editor',
     backWorks: 'Works',
     bioText: 'Rafaela Fontana holds a degree in Graphic Design and has been building her career in film editing. She made her feature-film debut as editor on Irmãs de Sangue, a fiction work that became the foundation of her practical and professional training. Rafaela believes editing is an active tool, able to solve problems in the film\'s own raw material, and that this kind of work only reaches its full potential when it grows out of a close, honest collaboration with the director.',
@@ -2213,6 +2221,74 @@ const OBRAS = {
     stills: [
       'assets/pelas-chagas-still-1.jpg',
       'assets/pelas-chagas-still-2.jpg'
+    ]
+  },
+  'trajeto-rima': {
+    titulo: 'Trajeto Rima',
+    ficha: 'Mini doc / CEUB / 2026 / Brasil',
+    creditos: [
+      ['Direção', 'Anna Greg'],
+      ['Roteiro e produção', 'Anna Greg'],
+      ['Montagem, design e cor', 'Rafaela Fontana']
+    ],
+    fichaCompleta: [
+      ['Direção', [
+        'Direção — Anna Greg',
+        'Roteiro — Anna Greg',
+        'Produção — Anna Greg'
+      ]],
+      ['Captação', [
+        'Câmera — Ana Mendonça, Anna Greg, Davi Moisés, Juan Costa e Lucas de Moraes',
+        'Som — Ana Mendonça, Anna Greg, Davi Moisés, Juan Costa e Lucas de Moraes'
+      ]],
+      ['Pós', [
+        'Montagem — Rafaela Fontana',
+        'Design — Rafaela Fontana',
+        'Cor — Rafaela Fontana'
+      ]],
+      ['Participações', [
+        'Lucas de Moraes, MC Pierrot, MC Bob, MC Greg, MC Deidade da Vila, MC AbuU, Anali, MC Morfeu, MC Anaju, MC Kamekado, MC ENYKA, MC TheSam, MC MDK, MC TZiree, Mestre Santos, MC Filhos Bastardo e o pessoal que colou na batalha'
+      ]]
+    ],
+    sinopse: 'Seguindo o percurso do metrô por algumas regiões do Distrito Federal, o filme passa pelas batalhas de rap que acontecem perto das estações e ouve quem faz parte delas, falando sobre o rap e sobre o movimento.',
+    projeto: 'Realizado como trabalho do curso de Jornalismo do CEUB, em Brasília.',
+    festivais: [],
+    fundo: 'assets/trajeto-rima-fundo.jpg',
+    trailer: 'assets/trajeto-rima.mp4', trailerTipo: 'arquivo', videoTitulo: '',
+    videoCapa: 'assets/trajeto-rima-capa.jpg',
+    en: {
+      ficha: 'Short documentary / CEUB / 2026 / Brazil',
+      creditos: [
+        ['Direction', 'Anna Greg'],
+        ['Script and production', 'Anna Greg'],
+        ['Editing, design and colour', 'Rafaela Fontana']
+      ],
+      fichaCompleta: [
+        ['Direction', [
+          'Director — Anna Greg',
+          'Script — Anna Greg',
+          'Producer — Anna Greg'
+        ]],
+        ['Crew', [
+          'Camera — Ana Mendonça, Anna Greg, Davi Moisés, Juan Costa and Lucas de Moraes',
+          'Sound — Ana Mendonça, Anna Greg, Davi Moisés, Juan Costa and Lucas de Moraes'
+        ]],
+        ['Post', [
+          'Editing — Rafaela Fontana',
+          'Design — Rafaela Fontana',
+          'Colour — Rafaela Fontana'
+        ]],
+        ['Featuring', [
+          'Lucas de Moraes, MC Pierrot, MC Bob, MC Greg, MC Deidade da Vila, MC AbuU, Anali, MC Morfeu, MC Anaju, MC Kamekado, MC ENYKA, MC TheSam, MC MDK, MC TZiree, Mestre Santos, MC Filhos Bastardo and everyone who showed up to the battle'
+        ]]
+      ],
+      sinopse: 'Following the metro line through a few regions of Brazil\'s Federal District, the film visits the rap battles held near the stations and listens to the people in them, talking about rap and about the movement.',
+      projeto: 'Made as a Journalism course project at CEUB, in Brasília.'
+    },
+    stills: [
+      'assets/trajeto-rima-still-1.jpg',
+      'assets/trajeto-rima-still-2.jpg',
+      'assets/trajeto-rima-still-3.jpg'
     ]
   }
 };
