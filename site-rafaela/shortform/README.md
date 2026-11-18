@@ -24,7 +24,8 @@ static files.
 
 - `index.html` contains the page structure, metadata, and accessible labels.
 - `styles.css` contains the visual system and responsive layout.
-- `app.js` owns language switching, the format accordions, and the accessible playback dialog.
+- `app.js` owns language switching, the format accordions, the desktop
+  hover previews, and the accessible playback dialog with previous/next.
 - `portfolio.js` is the content manifest for the selected videos. Add a
   project there with English and Portuguese fields, a poster, and a video URL.
 - `hero.js` controls the interactive computer model. The optimized model is
@@ -82,7 +83,9 @@ or reorder portfolio items to change their order inside each category. Titles,
 categories, and descriptions support `en` and `pt`; client and year are optional.
 
 For direct media, put MP4s/posters into `assets/videos/` and `assets/posters/`, then
-add an entry with `video`, `poster`, `width`, and `height`. For YouTube, use a
+add an entry with `video`, `poster`, `width`, and `height`, plus an optional
+`duration` in seconds that is shown on the thumbnail (get it with
+`ffprobe -v error -show_entries format=duration -of csv=p=0 file.mp4`). For YouTube, use a
 `youtubeId` instead of `video`; embeds load only after selecting a project.
 Optional `startSeconds` preserves a timestamp from the supplied link (110 and 847
 seconds for the current projects). An
@@ -90,10 +93,17 @@ optional `loop: true` repeats a clip. Do not edit `assets-manifest.json` to chan
 the UI.
 
 The page starts in English and remembers the visitor's language independently of
-the cinema site. Only one category opens at a time. Thumbnails are lazy-loaded;
-video sources and YouTube frames are created on deliberate project selection.
-Closing the dialog, including with Escape, unloads media and restores focus to
-the selected thumbnail. Native videos pause when the tab becomes hidden.
+the cinema site (the 404 page reads the same setting). The first category starts
+open so work is visible without a click, and only one category opens at a time.
+Opening a drawer keeps the clicked row where it was, and a drawer opened near the
+bottom of the screen slides up into view. Thumbnails are lazy-loaded. On desktop, a
+muted preview of a direct-media clip plays while the pointer rests on its
+thumbnail; it is skipped on touch screens, with reduced motion, and with Data
+Saver. Full video sources and YouTube frames are created on deliberate project
+selection. Inside the dialog, the arrow buttons and the ← → keys move through the
+other projects of the same format (wrapping at the ends). Closing the dialog,
+including with Escape, unloads media and restores focus to the last project shown.
+Native videos pause when the tab becomes hidden.
 
 ## Verification for this change
 

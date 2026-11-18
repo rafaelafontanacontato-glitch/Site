@@ -1,5 +1,6 @@
 // Edit categories and projects here. Keep each project in its categoryId.
 // YouTube entries use youtubeId and optional startSeconds; direct files use video.
+// duration (seconds, optional) is shown on the thumbnail, e.g. 26.7 -> "0:26".
 export const categories = [
   {
     id: "b-roll",
@@ -64,6 +65,7 @@ export const portfolio = [
     },
     width: 720,
     height: 1280,
+    duration: 26.7,
     categoryId: "real-estate",
   },
   {
@@ -84,6 +86,7 @@ export const portfolio = [
     },
     width: 360,
     height: 640,
+    duration: 60.1,
     categoryId: "talking-head",
   },
   {
@@ -104,6 +107,7 @@ export const portfolio = [
     },
     width: 1276,
     height: 720,
+    duration: 63.7,
     categoryId: "brand-storytelling",
   },
   {
@@ -124,6 +128,7 @@ export const portfolio = [
     },
     width: 360,
     height: 640,
+    duration: 24.2,
     categoryId: "b-roll",
   },
   {
@@ -144,6 +149,7 @@ export const portfolio = [
     },
     width: 720,
     height: 1280,
+    duration: 32.9,
     categoryId: "real-estate",
   },
   {
@@ -164,6 +170,7 @@ export const portfolio = [
     },
     width: 720,
     height: 1280,
+    duration: 27.4,
     categoryId: "b-roll",
   },
   {
@@ -184,6 +191,7 @@ export const portfolio = [
     },
     width: 1276,
     height: 718,
+    duration: 247.7,
     categoryId: "brand-storytelling",
   },
   {
@@ -204,6 +212,7 @@ export const portfolio = [
     },
     width: 360,
     height: 640,
+    duration: 60.1,
     categoryId: "talking-head",
   },
   {
@@ -224,6 +233,7 @@ export const portfolio = [
     },
     width: 720,
     height: 1280,
+    duration: 34.4,
     categoryId: "b-roll",
   },
   {
@@ -244,6 +254,7 @@ export const portfolio = [
     },
     width: 720,
     height: 1280,
+    duration: 60.1,
     categoryId: "real-estate",
   },
   {
@@ -264,6 +275,7 @@ export const portfolio = [
     },
     width: 1276,
     height: 718,
+    duration: 100.9,
     categoryId: "brand-storytelling",
   },
   {
@@ -284,6 +296,7 @@ export const portfolio = [
     },
     width: 720,
     height: 1280,
+    duration: 25.1,
     categoryId: "b-roll",
   },
   {
@@ -304,6 +317,7 @@ export const portfolio = [
     },
     width: 720,
     height: 1280,
+    duration: 45.1,
     categoryId: "real-estate",
   },
   {
@@ -324,6 +338,7 @@ export const portfolio = [
     },
     width: 720,
     height: 1280,
+    duration: 27.6,
     categoryId: "b-roll",
   },
   {
@@ -345,6 +360,7 @@ export const portfolio = [
     },
     width: 1280,
     height: 720,
+    duration: 7.6,
     loop: true,
   },
   {
