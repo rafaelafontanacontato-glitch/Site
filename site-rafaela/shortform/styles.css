@@ -2,8 +2,10 @@
   --paper: #e9e7e1;
   --paper-dark: #dcdad2;
   --ink: #121212;
-  --muted: #6d6b65;
+  --muted: #5f5d58;
   --blue: #1942d8;
+  --blue-light: #91a7ff;
+  --focus: var(--blue);
   --night: #121212;
   --line: rgba(18, 18, 18, 0.18);
   --display: "Antonio", Impact, sans-serif;
@@ -34,9 +36,17 @@ button {
 }
 button:focus-visible,
 a:focus-visible,
+summary:focus-visible,
 video:focus-visible {
-  outline: 2px solid var(--blue);
+  outline: 2px solid var(--focus);
   outline-offset: 4px;
+}
+/* Dark blue focus rings disappear on near-black; use the light accent there. */
+.work-section,
+.contact,
+.project-dialog,
+.site-header.is-dark {
+  --focus: var(--blue-light);
 }
 .skip-link {
   position: fixed;
@@ -134,7 +144,7 @@ video:focus-visible {
 }
 .eyebrow {
   margin: 0 0 14px;
-  font: 500 10px var(--mono);
+  font: 500 11px var(--mono);
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
@@ -244,7 +254,7 @@ video:focus-visible {
   display: flex;
   align-items: center;
   gap: 12px;
-  font: 500 10px var(--mono);
+  font: 500 11px var(--mono);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -254,14 +264,29 @@ video:focus-visible {
   color: var(--blue);
   animation: arrow 1.5s ease-in-out infinite;
 }
-.hero-index {
+.hero-status {
   position: absolute;
   right: clamp(18px, 3vw, 50px);
   bottom: clamp(20px, 4vw, 48px);
   z-index: 5;
-  margin: 0;
-  font: 500 10px var(--mono);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font: 500 11px var(--mono);
   letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+.hero-status::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--blue);
+  box-shadow: 0 0 0 4px rgba(25, 66, 216, 0.16);
+}
+.hero-status:hover {
+  color: var(--blue);
 }
 @keyframes arrow {
   50% {
@@ -355,7 +380,7 @@ video:focus-visible {
 .services span {
   padding: 11px 5px 11px 0;
   border-bottom: 1px solid var(--line);
-  font: 500 10px var(--mono);
+  font: 500 11px var(--mono);
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
@@ -398,12 +423,20 @@ video:focus-visible {
   padding-top: 14px;
   border-top: 1px solid #55534f;
   color: #aaa69d;
-  font: 400 10px var(--mono);
+  font: 400 11px var(--mono);
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 .footer-bottom a {
   color: #f1efe8;
+}
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+}
+.footer-links a:hover {
+  color: var(--blue-light);
 }
 .model-credit {
   position: relative;
@@ -446,13 +479,13 @@ video:focus-visible {
   }
   .site-header nav {
     gap: 12px;
-    font-size: 9px;
+    font-size: 11px;
   }
   .wordmark {
     font-size: 24px;
   }
   .language-toggle {
-    font-size: 9px;
+    font-size: 11px;
   }
   .hero {
     min-height: 580px;
@@ -484,11 +517,13 @@ video:focus-visible {
   .hero-scroll {
     left: 17px;
     bottom: 21px;
-    font-size: 9px;
+    font-size: 10px;
   }
-  .hero-index {
+  .hero-status {
     right: 17px;
     bottom: 21px;
+    gap: 8px;
+    font-size: 10px;
   }
   .section-heading {
     align-items: start;
@@ -527,9 +562,6 @@ video:focus-visible {
     margin: 27px 0 30px;
     line-height: 1.65;
   }
-  .services {
-    font-size: 9px;
-  }
   .contact {
     padding: 66px 17px 19px;
   }
@@ -540,10 +572,16 @@ video:focus-visible {
     font-size: 22px;
   }
   .footer-bottom {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    row-gap: 16px;
     margin-top: 75px;
-    font-size: 9px;
+    font-size: 10px;
     align-items: end;
     line-height: 1.5;
+  }
+  .footer-links {
+    grid-column: 1 / -1;
   }
   .footer-bottom span {
     text-align: right;
@@ -712,9 +750,17 @@ video:focus-visible {
   font: 300 28px/1 var(--body);
   color: #f2f0e9;
 }
+.format-symbol {
+  transition:
+    transform 0.4s cubic-bezier(0.22, 0.7, 0.2, 1),
+    background 0.25s,
+    border-color 0.25s;
+}
+/* The plus turns into a close cross. */
 .format-toggle[aria-expanded="true"] .format-symbol {
   border-color: var(--blue);
   background: var(--blue);
+  transform: rotate(45deg);
 }
 .format-panel {
   padding: 12px 18px 36px;
@@ -729,6 +775,11 @@ video:focus-visible {
   gap: 22px;
   padding: 0;
   margin: 0;
+}
+/* auto-fill keeps empty columns, so a vertical clip is the same size in
+   every format, whether the drawer holds two clips or five. */
+.format-gallery.is-portrait {
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 }
 .format-gallery li {
   min-width: 0;
@@ -745,40 +796,76 @@ video:focus-visible {
 }
 .tile-image {
   position: relative;
-  isolation: isolate;
   display: block;
   width: 100%;
   aspect-ratio: 16/9;
   overflow: hidden;
   background: #080809;
   border: 1px solid #333430;
-}
-/* vídeo vertical dentro do quadro padrão: o próprio poster, borrado, preenche as laterais */
-.tile-image::before {
-  content: "";
-  position: absolute;
-  inset: -14%;
-  z-index: -1;
-  background: var(--poster) center / cover no-repeat;
-  filter: blur(24px) brightness(0.5);
+  transition: border-color 0.2s;
 }
 .tile-image img {
   width: 100%;
   height: 100%;
   object-fit: contain;
   display: block;
-  transition: opacity 0.2s;
 }
-.project-tile:hover .tile-image img {
-  opacity: 0.8;
+/* YouTube thumbnails carry baked-in black bars; crop them away. */
+.tile-image.is-youtube img {
+  object-fit: cover;
+}
+.is-portrait .tile-image {
+  aspect-ratio: 9/16;
+}
+.tile-preview {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #080809;
+  opacity: 0;
+  transition: opacity 0.25s;
+  pointer-events: none;
+}
+.project-tile.is-previewing .tile-preview {
+  opacity: 1;
+}
+.tile-badge {
+  position: absolute;
+  z-index: 1;
+  left: 8px;
+  bottom: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 7px;
+  background: rgba(8, 8, 9, 0.76);
+  color: #f2f0e9;
+  font: 500 10px/1 var(--mono);
+  letter-spacing: 0.04em;
+  transition: background 0.2s;
+}
+.tile-badge svg {
+  width: 9px;
+  height: 9px;
+  fill: currentColor;
+}
+.project-tile:hover .tile-image,
+.project-tile:focus-visible .tile-image {
+  border-color: var(--blue-light);
+}
+.project-tile:hover .tile-badge,
+.project-tile:focus-visible .tile-badge {
+  background: var(--blue);
 }
 .tile-caption {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto 1fr;
   align-items: start;
   gap: 10px;
   padding-top: 13px;
-  font: 400 10px/1.6 var(--mono);
+  font: 400 11px/1.6 var(--mono);
   letter-spacing: 0.03em;
   text-transform: uppercase;
 }
@@ -787,12 +874,10 @@ video:focus-visible {
 }
 .tile-caption strong {
   font-weight: 400;
+  transition: color 0.2s;
 }
-.tile-caption i {
-  font-style: normal;
-  color: #91a7ff;
-  font-size: 16px;
-  line-height: 1;
+.project-tile:hover .tile-caption strong {
+  color: var(--blue-light);
 }
 .format-empty {
   margin: 0;
@@ -863,8 +948,19 @@ body.project-open {
 .project-dialog.is-portrait video {
   height: 65svh;
 }
+/* Let a vertical clip sit on the dialog instead of inside a wider black box. */
+.project-dialog.is-portrait .project-player {
+  background: transparent;
+}
 .project-dialog-meta {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
   padding-top: 18px;
+}
+.project-dialog-text {
+  min-width: 0;
 }
 .project-dialog-meta .eyebrow {
   color: #a3aff0;
@@ -876,14 +972,59 @@ body.project-open {
   text-transform: uppercase;
   letter-spacing: -0.01em;
 }
-.project-dialog-meta > p:last-child {
+.project-dialog-text > p:last-child {
   font-size: 13px;
   line-height: 1.5;
   color: #bebcb5;
   margin: 10px 0 0;
 }
-.project-dialog-meta > [hidden] {
+.project-dialog-text > [hidden] {
   display: none;
+}
+.project-nav {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 12px;
+  color: #bdbbb3;
+  font: 400 11px var(--mono);
+  letter-spacing: 0.04em;
+}
+.project-nav[hidden] {
+  display: none;
+}
+.project-position {
+  min-width: 5ch;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.project-step {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid #66665e;
+  border-radius: 50%;
+  background: none;
+  color: #f2f0e9;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
+}
+.project-step svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.project-step:hover {
+  border-color: var(--blue);
+  background: var(--blue);
 }
 @media (max-width: 700px) {
   .format-toggle {
@@ -900,7 +1041,7 @@ body.project-open {
   .format-meta {
     flex-direction: column-reverse;
     gap: 9px;
-    font-size: 9px;
+    font-size: 10px;
   }
   .format-symbol {
     width: 36px;
@@ -910,23 +1051,36 @@ body.project-open {
   .format-panel {
     padding: 5px 0 28px;
   }
-  .format-gallery {
+  .format-gallery,
+  .format-gallery.is-portrait {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 24px 13px;
   }
+  .format-gallery:not(.is-portrait) {
+    grid-template-columns: 1fr;
+  }
+  .format-gallery:not(.is-portrait) .project-tile {
+    max-width: 100%;
+  }
   .tile-caption {
     gap: 6px;
-    font-size: 9px;
+    font-size: 10px;
     line-height: 1.6;
-  }
-  .tile-caption i {
-    display: none;
   }
   .project-dialog-inner {
     padding: 50px 12px 18px;
   }
+  .project-dialog-meta {
+    gap: 14px;
+  }
   .project-dialog-meta h2 {
     font-size: 24px;
+  }
+  .project-nav {
+    gap: 8px;
+  }
+  .project-position {
+    min-width: 4ch;
   }
   .manifesto p {
     line-height: 1.2;
@@ -940,3 +1094,31 @@ body.project-open {
   text-underline-offset: 3px;
 }
 .project-player iframe { background-position:center; background-size:contain; background-repeat:no-repeat; }
+
+/* Portrait tablets: stack the name above the computer, as on phones,
+   so the second line of the name does not run into the model. */
+@media (min-width: 701px) and (max-width: 1100px) and (orientation: portrait) {
+  .hero-copy {
+    top: 13svh;
+    transform: none;
+  }
+  .computer-stage {
+    inset: 40% -4% 6% 12%;
+  }
+}
+/* Landscape tablets and small laptops: give the name a little more room. */
+@media (min-width: 701px) and (max-width: 1200px) and (orientation: landscape) {
+  .computer-stage {
+    inset: 0 -3% 0 41%;
+  }
+}
+/* Very narrow phones: keep the two bottom hero labels and the menu apart. */
+@media (max-width: 359px) {
+  .hero-status {
+    display: none;
+  }
+  .site-header nav {
+    gap: 9px;
+    font-size: 10px;
+  }
+}

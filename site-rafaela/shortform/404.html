@@ -5,82 +5,128 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex" />
     <title>Page not found — Rafaela Fontana</title>
+    <link
+      rel="icon"
+      href="/assets/favicon-32.png"
+      sizes="32x32"
+      type="image/png"
+    />
+    <!-- Absolute paths: this page is served for any unknown /shortform/* URL. -->
+    <link rel="stylesheet" href="/shortform/assets/fonts/fonts.css" />
     <style>
+      :root {
+        --paper: #e9e7e1;
+        --ink: #121212;
+        --blue: #1942d8;
+      }
+      * {
+        box-sizing: border-box;
+      }
       body {
         margin: 0;
-        background: #ecede9;
-        color: #14151a;
-        font-family: Arial, sans-serif;
         min-height: 100svh;
         display: grid;
         place-items: center;
+        padding: 24px 18px;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Manrope", Arial, sans-serif;
       }
       main {
-        width: min(80%, 700px);
+        width: min(100%, 760px);
       }
-      p {
-        line-height: 1.7;
+      small,
+      a,
+      button {
+        font: 500 11px "DM Mono", monospace;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
       }
       h1 {
-        font-size: clamp(3rem, 8vw, 6rem);
-        line-height: 1;
-        letter-spacing: -0.06em;
-        margin: 0.4em 0;
+        margin: 0.35em 0 0.6em;
+        font: 500 clamp(56px, 11vw, 132px) / 0.9 "Antonio", Impact, sans-serif;
+        letter-spacing: -0.045em;
+        text-transform: uppercase;
+      }
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 14px 28px;
       }
       a {
         color: inherit;
-        text-underline-offset: 0.3em;
-      }
-      small {
-        letter-spacing: 0.1em;
+        text-decoration: underline;
+        text-decoration-color: var(--blue);
+        text-underline-offset: 0.4em;
       }
       button {
-        background: none;
+        padding: 12px 0;
         border: 0;
-        padding: 1em 0;
+        background: none;
         color: inherit;
         cursor: pointer;
+      }
+      a:focus-visible,
+      button:focus-visible {
+        outline: 2px solid var(--blue);
+        outline-offset: 4px;
       }
     </style>
   </head>
   <body>
     <main>
-      <small>RAFAELA FONTANA / 404</small>
+      <small>Rafaela Fontana / 404</small>
       <h1
         data-en="This page is out of frame."
         data-pt="Esta página ficou fora de quadro."
       >
         This page is out of frame.
       </h1>
-      <p>
+      <div class="actions">
         <a
           href="/shortform/"
-          data-en="Back to the portfolio ↗"
-          data-pt="Voltar ao portfólio ↗"
-          >Back to the portfolio ↗</a
+          data-en="Back to the portfolio"
+          data-pt="Voltar ao portfólio"
+          >Back to the portfolio</a
         >
-      </p>
-      <button type="button" aria-label="Switch language">EN / PT</button>
+        <button type="button" aria-label="Mudar para português">EN / PT</button>
+      </div>
     </main>
     <script>
+      // Same storage key as the portfolio, so the visitor keeps their language.
+      const storageKey = "rafaela-shortform-language";
+      const button = document.querySelector("button");
       let language = "en";
-      document.querySelector("button").addEventListener("click", () => {
-        language = language === "en" ? "pt" : "en";
+      try {
+        language = localStorage.getItem(storageKey) === "pt" ? "pt" : "en";
+      } catch {
+        /* storage may be unavailable */
+      }
+      function apply() {
         document.documentElement.lang = language === "pt" ? "pt-BR" : "en";
         document.title =
           language === "pt"
             ? "Página não encontrada — Rafaela Fontana"
             : "Page not found — Rafaela Fontana";
-        document
-          .querySelector("button")
-          .setAttribute(
-            "aria-label",
-            language === "pt" ? "Trocar idioma" : "Switch language",
-          );
+        button.setAttribute(
+          "aria-label",
+          language === "pt" ? "Switch to English" : "Mudar para português",
+        );
         document
           .querySelectorAll("[data-en]")
           .forEach((el) => (el.textContent = el.dataset[language]));
+      }
+      button.addEventListener("click", () => {
+        language = language === "en" ? "pt" : "en";
+        try {
+          localStorage.setItem(storageKey, language);
+        } catch {
+          /* storage may be unavailable */
+        }
+        apply();
       });
+      apply();
     </script>
   </body>
 </html>

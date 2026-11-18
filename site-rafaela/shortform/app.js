@@ -1,4 +1,4 @@
-import { portfolio, categories } from "./portfolio.js?v=6";
+import { portfolio, categories } from "./portfolio.js?v=7";
 
 const copy = {
   en: {
@@ -11,13 +11,18 @@ const copy = {
     servicesLabel: "Services",
     modelCredit: "3D model credit",
     closeProject: "Close project",
+    prevProject: "Previous project",
+    nextProject: "Next project",
+    playProject: "Play {title}",
+    watchOnYouTube: "Watch on YouTube ↗",
     modelCreditText:
       '“PS1 Style Retro Computer Station – Low Poly” by <a href="https://sketchfab.com/alexself" target="_blank" rel="noopener">alexself</a>, licensed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>.',
     navWork: "Work",
     navAbout: "About",
     navContact: "Contact",
     heroEyebrow: "Independent video editor",
-    heroRole: "Video editor",
+    heroRole: "Short-form & YouTube",
+    heroStatus: "Open for projects",
     scroll: "See selected work",
     workEyebrow: "Selected archive",
     workTitle: "The edits.",
@@ -48,13 +53,18 @@ const copy = {
     servicesLabel: "Serviços",
     modelCredit: "Crédito do modelo 3D",
     closeProject: "Fechar projeto",
+    prevProject: "Projeto anterior",
+    nextProject: "Próximo projeto",
+    playProject: "Assistir: {title}",
+    watchOnYouTube: "Assistir no YouTube ↗",
     modelCreditText:
       '“PS1 Style Retro Computer Station – Low Poly” por <a href="https://sketchfab.com/alexself" target="_blank" rel="noopener">alexself</a>, licenciado sob <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>.',
     navWork: "Trabalhos",
     navAbout: "Sobre",
     navContact: "Contato",
     heroEyebrow: "Editora de vídeo independente",
-    heroRole: "Editora de vídeo",
+    heroRole: "Conteúdo curto & YouTube",
+    heroStatus: "Agenda aberta",
     scroll: "Ver trabalhos selecionados",
     workEyebrow: "Arquivo selecionado",
     workTitle: "Os cortes.",
@@ -77,6 +87,9 @@ const copy = {
   },
 };
 
+const PLAY_ICON =
+  '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 1.6v8.8L10.2 6z"/></svg>';
+
 const archive = document.querySelector("[data-format-archive]");
 const dialog = document.querySelector("[data-project-dialog]");
 const player = document.querySelector("[data-project-player]");
@@ -84,9 +97,18 @@ const dialogCategory = document.querySelector("[data-project-category]");
 const dialogTitle = document.querySelector("[data-project-title]");
 const dialogDescription = document.querySelector("[data-project-description]");
 const closeDialogButton = document.querySelector("[data-dialog-close]");
+const projectNav = document.querySelector("[data-project-nav]");
+const projectPosition = document.querySelector("[data-project-position]");
+const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
+const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+const saveData = Boolean(navigator.connection?.saveData);
 let language;
-let openCategoryId = null;
+// The first format starts open so the work is visible without a click.
+let openCategoryId = categories[0]?.id ?? null;
 let lastTrigger = null;
+let currentProjects = [];
+let currentIndex = -1;
+let activePreview = null;
 
 try {
   language = localStorage.getItem("rafaela-shortform-language");
@@ -111,6 +133,11 @@ const countLabel = (count) =>
     ? copy[language].projectCount
     : copy[language].projectCountPlural
   ).replace("{count}", count);
+const formatDuration = (seconds) => {
+  if (!Number.isFinite(seconds) || seconds <= 0) return "";
+  const total = Math.floor(seconds);
+  return `${Math.floor(total / 60)}:${String(total % 60).padStart(2, "0")}`;
+};
 
 function clearPlayer() {
   const media = player.querySelector("video");
@@ -126,73 +153,8 @@ function closeProject() {
   if (dialog.open) dialog.close();
 }
 
-/* Abrir e fechar as abas com altura, espaçamento e opacidade animados.
-   Se der outro clique no meio da animação, ela continua de onde estava. */
-const PANEL_MS = 620;
-const PANEL_EASE = "cubic-bezier(.22,.61,.36,1)";
-const panelAnimations = new WeakMap();
-const prefersReducedMotion = () =>
-  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-function slidePanel(panel, open) {
-  const running = panelAnimations.get(panel);
-  let from = null;
-  if (running) {
-    const now = getComputedStyle(panel);
-    from = {
-      height: `${panel.offsetHeight}px`,
-      paddingTop: now.paddingTop,
-      paddingBottom: now.paddingBottom,
-      opacity: now.opacity,
-    };
-    running.onfinish = null;
-    running.cancel();
-    panelAnimations.delete(panel);
-  }
-  if (open) panel.hidden = false;
-  if (prefersReducedMotion() || !panel.animate) {
-    panel.hidden = !open;
-    updateHeader();
-    return;
-  }
-  const natural = getComputedStyle(panel);
-  const full = {
-    height: `${panel.offsetHeight}px`,
-    paddingTop: natural.paddingTop,
-    paddingBottom: natural.paddingBottom,
-    opacity: "1",
-  };
-  const none = { height: "0px", paddingTop: "0px", paddingBottom: "0px", opacity: "0" };
-  const start = from || (open ? none : full);
-  const end = open ? full : none;
-  panel.style.overflow = "hidden";
-  const animation = panel.animate([start, end], {
-    duration: PANEL_MS,
-    easing: PANEL_EASE,
-  });
-  panelAnimations.set(panel, animation);
-  animation.onfinish = () => {
-    panelAnimations.delete(panel);
-    panel.style.overflow = "";
-    if (!open) panel.hidden = true;
-    updateHeader();
-  };
-}
-
-function setOpenCategory(next) {
-  openCategoryId = next;
-  archive.querySelectorAll(".format-item").forEach((item) => {
-    const open = item.dataset.categoryId === next;
-    const button = item.querySelector(".format-toggle");
-    if ((button.getAttribute("aria-expanded") === "true") === open) return;
-    button.setAttribute("aria-expanded", String(open));
-    item.querySelector(".format-symbol").textContent = open ? "×" : "+";
-    slidePanel(item.querySelector(".format-panel"), open);
-  });
-  updateHeader();
-}
-
 function renderArchive() {
+  stopPreview();
   archive.replaceChildren();
   categories.forEach((category, categoryIndex) => {
     const projects = projectsFor(category.id);
@@ -206,20 +168,20 @@ function renderArchive() {
         <button class="format-toggle" type="button" aria-expanded="${isOpen}" aria-controls="${galleryId}">
           <span class="format-index">${String(categoryIndex + 1).padStart(2, "0")}</span>
           <span class="format-title">${escapeHtml(localized(category.title))}</span>
-          <span class="format-meta"><span>${countLabel(projects.length)}</span><span class="format-symbol" aria-hidden="true">${isOpen ? "×" : "+"}</span></span>
+          <span class="format-meta"><span>${countLabel(projects.length)}</span><span class="format-symbol" aria-hidden="true">+</span></span>
         </button>
       </h3>
       <div class="format-panel" id="${galleryId}" ${isOpen ? "" : "hidden"}>
         ${projects.length ? '<ul class="format-gallery"></ul>' : `<p class="format-empty">${escapeHtml(copy[language].workEmpty)}</p>`}
       </div>`;
     const toggle = item.querySelector(".format-toggle");
-    toggle.addEventListener("click", () => {
-      const next = openCategoryId === category.id ? null : category.id;
-      if (next !== openCategoryId) closeProject();
-      setOpenCategory(next);
-    });
+    toggle.addEventListener("click", () => toggleCategory(category.id, toggle));
     const gallery = item.querySelector(".format-gallery");
     if (gallery) {
+      gallery.classList.toggle(
+        "is-portrait",
+        projects.every((p) => p.height > p.width),
+      );
       projects.forEach((project, projectIndex) =>
         gallery.append(createTile(project, projectIndex)),
       );
@@ -228,27 +190,162 @@ function renderArchive() {
   });
 }
 
+function toggleCategory(id, toggle) {
+  stopPreview();
+  closeProject();
+  const previous = openCategoryId;
+  const next = previous === id ? null : id;
+  const items = [...archive.querySelectorAll(".format-item")];
+  const itemFor = (categoryId) =>
+    items.find((item) => item.dataset.categoryId === categoryId);
+  const clicked = itemFor(id);
+  const before = toggle.getBoundingClientRect().top;
+  openCategoryId = next;
+  if (previous && previous !== id) {
+    const previousItem = itemFor(previous);
+    // A drawer above the clicked row closes at once (and the page is shifted
+    // back below), so the row never slides away from the pointer.
+    const isAbove = items.indexOf(previousItem) < items.indexOf(clicked);
+    setExpanded(previousItem, false, !isAbove);
+  }
+  setExpanded(clicked, Boolean(next), true);
+  const shift = toggle.getBoundingClientRect().top - before;
+  if (shift) window.scrollBy({ top: shift, behavior: "instant" });
+  // A drawer opened near the bottom of the screen slides up into view.
+  if (next && before > window.innerHeight * 0.55) {
+    clicked.scrollIntoView({
+      block: "start",
+      behavior: reducedMotion.matches ? "auto" : "smooth",
+    });
+  }
+  updateHeader();
+}
+
+function setExpanded(item, open, animate) {
+  item.querySelector(".format-toggle").setAttribute("aria-expanded", String(open));
+  const panel = item.querySelector(".format-panel");
+  panel.getAnimations?.().forEach((animation) => animation.cancel());
+  panel.style.overflow = "";
+  if (!animate || reducedMotion.matches || !panel.animate) {
+    panel.hidden = !open;
+    return;
+  }
+  const easing = "cubic-bezier(0.22, 0.7, 0.2, 1)";
+  panel.hidden = false;
+  const style = getComputedStyle(panel);
+  const full = {
+    height: `${panel.offsetHeight}px`,
+    paddingTop: style.paddingTop,
+    paddingBottom: style.paddingBottom,
+    opacity: 1,
+  };
+  const empty = { height: "0px", paddingTop: "0px", paddingBottom: "0px", opacity: 0 };
+  panel.style.overflow = "hidden";
+  const animation = panel.animate(open ? [empty, full] : [full, empty], {
+    duration: open ? 520 : 340,
+    easing,
+  });
+  animation.onfinish = () => {
+    panel.style.overflow = "";
+    if (!open) panel.hidden = true;
+  };
+  if (open) {
+    panel.querySelectorAll(".format-gallery > li").forEach((tile, index) =>
+      tile.animate(
+        [
+          { opacity: 0, transform: "translateY(18px)" },
+          { opacity: 1, transform: "none" },
+        ],
+        { duration: 460, delay: 90 + index * 55, easing, fill: "backwards" },
+      ),
+    );
+  }
+}
+
 function createTile(project, index) {
+  const listItem = document.createElement("li");
   const tile = document.createElement("button");
   tile.type = "button";
   tile.className = "project-tile";
-  const listItem = document.createElement("li");
+  tile.dataset.projectId = project.id;
+  const title = localized(project.title);
+  const duration = formatDuration(project.duration);
+  const badge = duration || (project.youtubeId ? "YouTube" : "");
   const poster =
     project.poster ||
     (project.youtubeId
       ? `https://i.ytimg.com/vi/${encodeURIComponent(project.youtubeId)}/hqdefault.jpg`
       : "");
+  tile.setAttribute(
+    "aria-label",
+    copy[language].playProject.replace("{title}", title) +
+      (duration ? ` (${duration})` : ""),
+  );
   tile.innerHTML = `
-    <span class="tile-image" style="--poster:url(${escapeHtml(JSON.stringify(poster))})"><img src="${escapeHtml(poster)}" alt="" loading="lazy" decoding="async"></span>
-    <span class="tile-caption"><span>${String(index + 1).padStart(2, "0")}</span><strong>${escapeHtml(localized(project.title))}</strong><i aria-hidden="true">↗</i></span>`;
+    <span class="tile-image${project.youtubeId ? " is-youtube" : ""}">
+      <img src="${escapeHtml(poster)}" alt="" loading="lazy" decoding="async">
+      <span class="tile-badge">${PLAY_ICON}${badge ? `<span>${escapeHtml(badge)}</span>` : ""}</span>
+    </span>
+    <span class="tile-caption"><span>${String(index + 1).padStart(2, "0")}</span><strong>${escapeHtml(title)}</strong></span>`;
   tile.addEventListener("click", () => openProject(project, tile));
+  attachPreview(tile, project);
   listItem.append(tile);
   return listItem;
 }
 
-function openProject(project, trigger) {
+// Desktop only: a muted preview plays while the pointer rests on a thumbnail.
+function attachPreview(tile, project) {
+  if (!project.video) return;
+  let video = null;
+  tile.addEventListener("pointerenter", (event) => {
+    if (
+      event.pointerType !== "mouse" ||
+      !finePointer.matches ||
+      reducedMotion.matches ||
+      saveData
+    )
+      return;
+    stopPreview();
+    const state = { tile, video: null, timer: 0 };
+    state.timer = window.setTimeout(() => {
+      if (!video) {
+        video = document.createElement("video");
+        video.className = "tile-preview";
+        video.defaultMuted = true;
+        video.muted = true;
+        video.loop = true;
+        video.playsInline = true;
+        video.preload = "auto";
+        video.tabIndex = -1;
+        video.setAttribute("aria-hidden", "true");
+        video.src = project.video;
+        video.addEventListener("playing", () => {
+          if (activePreview?.video === video)
+            tile.classList.add("is-previewing");
+        });
+        tile.querySelector(".tile-image").append(video);
+      }
+      state.video = video;
+      video.play().catch(() => {});
+    }, 140);
+    activePreview = state;
+  });
+  tile.addEventListener("pointerleave", () => {
+    if (activePreview?.tile === tile) stopPreview();
+  });
+}
+
+function stopPreview() {
+  if (!activePreview) return;
+  const { tile, video, timer } = activePreview;
+  window.clearTimeout(timer);
+  tile.classList.remove("is-previewing");
+  video?.pause();
+  activePreview = null;
+}
+
+function renderProject(project) {
   clearPlayer();
-  lastTrigger = trigger;
   const isYouTube = Boolean(project.youtubeId);
   if (isYouTube) {
     const frame = document.createElement("iframe");
@@ -267,8 +364,7 @@ function openProject(project, trigger) {
     watchLink.href = `https://www.youtube.com/watch?v=${encodeURIComponent(project.youtubeId)}&t=${start}s`;
     watchLink.target = "_blank";
     watchLink.rel = "noopener";
-    watchLink.textContent =
-      language === "pt" ? "Assistir no YouTube ↗" : "Watch on YouTube ↗";
+    watchLink.textContent = copy[language].watchOnYouTube;
     player.append(frame, watchLink);
   } else if (project.video) {
     const video = document.createElement("video");
@@ -281,20 +377,48 @@ function openProject(project, trigger) {
     video.setAttribute("aria-label", localized(project.title));
     player.append(video);
   }
+  // Same label as the drawer the project came from.
   dialogCategory.textContent =
-    localized(project.category) ||
     localized(
       categories.find((category) => category.id === project.categoryId)?.title,
-    );
+    ) || localized(project.category);
   dialogTitle.textContent = localized(project.title);
   dialogDescription.textContent = localized(project.description);
   dialogDescription.hidden = !dialogDescription.textContent;
   dialog.classList.toggle("is-portrait", project.height > project.width);
+  projectNav.hidden = currentProjects.length < 2;
+  projectPosition.textContent = `${currentIndex + 1} / ${currentProjects.length}`;
+}
+
+const playCurrent = () =>
+  player
+    .querySelector("video")
+    ?.play()
+    .catch(() => {});
+
+function openProject(project, trigger) {
+  stopPreview();
+  lastTrigger = trigger;
+  currentProjects = projectsFor(project.categoryId);
+  currentIndex = Math.max(0, currentProjects.indexOf(project));
+  renderProject(project);
   dialog.showModal();
   document.body.classList.add("project-open");
-  const media = player.querySelector("video");
-  if (media) media.play().catch(() => {});
+  playCurrent();
   closeDialogButton.focus();
+}
+
+// Previous / next stay inside the open format and wrap around.
+function stepProject(direction) {
+  const total = currentProjects.length;
+  if (!dialog.open || total < 2) return;
+  currentIndex = (currentIndex + direction + total) % total;
+  const project = currentProjects[currentIndex];
+  lastTrigger =
+    archive.querySelector(`[data-project-id="${CSS.escape(project.id)}"]`) ||
+    lastTrigger;
+  renderProject(project);
+  playCurrent();
 }
 
 function setLanguage(nextLanguage) {
@@ -330,17 +454,39 @@ function setLanguage(nextLanguage) {
 }
 
 closeDialogButton.addEventListener("click", closeProject);
+projectNav.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-project-step]");
+  if (button) stepProject(Number(button.dataset.projectStep));
+});
+dialog.addEventListener("keydown", (event) => {
+  if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+  // Arrow keys on a focused player still seek the video.
+  if (event.target instanceof HTMLMediaElement) return;
+  if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+  event.preventDefault();
+  stepProject(event.key === "ArrowRight" ? 1 : -1);
+});
 dialog.addEventListener("click", (event) => {
   if (event.target === dialog) closeProject();
 });
 dialog.addEventListener("close", () => {
   clearPlayer();
   document.body.classList.remove("project-open");
-  lastTrigger?.focus({ preventScroll: true });
+  if (lastTrigger) {
+    lastTrigger.focus({ preventScroll: true });
+    const rect = lastTrigger.getBoundingClientRect();
+    if (rect.bottom < 0 || rect.top > window.innerHeight)
+      lastTrigger.scrollIntoView({ block: "center" });
+  }
   lastTrigger = null;
+  currentProjects = [];
+  currentIndex = -1;
 });
 document.addEventListener("visibilitychange", () => {
-  if (document.hidden) player.querySelector("video")?.pause();
+  if (document.hidden) {
+    player.querySelector("video")?.pause();
+    stopPreview();
+  }
 });
 document
   .querySelector("[data-language-toggle]")
